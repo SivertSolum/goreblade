@@ -1,0 +1,794 @@
+/* ============================================
+   GOREBLADE: UNHOLY SURVIVORS
+   Retro Horror Atari-Style CSS
+   ============================================ */
+
+:root {
+    /* Blood & Gore Palette */
+    --blood-red: #8B0000;
+    --fresh-blood: #DC143C;
+    --dried-blood: #4A0000;
+    --flesh-pink: #DDA0A0;
+    --bone-white: #F5F5DC;
+    --rot-green: #556B2F;
+    --corpse-purple: #4B0082;
+    --void-black: #0A0A0A;
+    --hellfire-orange: #FF4500;
+    --ghost-blue: #4169E1;
+    
+    /* UI Colors */
+    --bg-dark: #0D0D0D;
+    --bg-darker: #050505;
+    --text-primary: #E8E8E8;
+    --text-dim: #888888;
+    --health-color: #DC143C;
+    --xp-color: #9932CC;
+    
+    /* Retro CRT Effects */
+    --scanline-opacity: 0.08;
+    --glow-intensity: 0.6;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg-darker);
+    font-family: 'Press Start 2P', monospace;
+    color: var(--text-primary);
+    overflow: hidden;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+/* CRT Scanline Effect */
+.scanlines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, var(--scanline-opacity)) 0px,
+        rgba(0, 0, 0, var(--scanline-opacity)) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+    z-index: 1000;
+}
+
+/* Game Container */
+#game-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: 
+        radial-gradient(ellipse at center, var(--dried-blood) 0%, var(--bg-darker) 70%),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+}
+
+/* Screens */
+.screen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.3s ease;
+}
+
+.screen.hidden,
+.hidden {
+    display: none !important;
+    opacity: 0;
+}
+
+/* Title Screen */
+#title-screen {
+    background: linear-gradient(180deg, 
+        var(--bg-darker) 0%, 
+        var(--dried-blood) 50%, 
+        var(--bg-darker) 100%
+    );
+}
+
+.title-content {
+    text-align: center;
+    z-index: 10;
+    animation: flicker 4s infinite;
+}
+
+@keyframes flicker {
+    0%, 100% { opacity: 1; }
+    92% { opacity: 1; }
+    93% { opacity: 0.8; }
+    94% { opacity: 1; }
+    95% { opacity: 0.9; }
+    96% { opacity: 1; }
+}
+
+.game-title {
+    font-size: 4rem;
+    color: var(--fresh-blood);
+    text-shadow: 
+        0 0 10px var(--blood-red),
+        0 0 20px var(--blood-red),
+        0 0 40px var(--blood-red),
+        4px 4px 0 var(--dried-blood);
+    letter-spacing: 8px;
+    margin-bottom: 10px;
+    animation: bloodDrip 3s ease-in-out infinite;
+}
+
+@keyframes bloodDrip {
+    0%, 100% { text-shadow: 
+        0 0 10px var(--blood-red),
+        0 0 20px var(--blood-red),
+        0 0 40px var(--blood-red),
+        4px 4px 0 var(--dried-blood);
+    }
+    50% { text-shadow: 
+        0 0 20px var(--fresh-blood),
+        0 0 40px var(--blood-red),
+        0 0 60px var(--blood-red),
+        4px 6px 0 var(--dried-blood);
+    }
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: var(--bone-white);
+    letter-spacing: 12px;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 0 var(--void-black);
+}
+
+.skull-art {
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: var(--bone-white);
+    white-space: pre;
+    line-height: 1.2;
+    margin: 20px 0;
+    text-shadow: 0 0 10px var(--bone-white);
+}
+
+.tagline {
+    font-size: 0.6rem;
+    color: var(--flesh-pink);
+    margin: 20px 0;
+    font-style: italic;
+}
+
+.copyright {
+    font-size: 0.5rem;
+    color: var(--text-dim);
+    margin-top: 20px;
+}
+
+.controller-hint {
+    font-size: 0.5rem;
+    color: var(--rot-green);
+    margin-top: 15px;
+}
+
+.mute-btn-menu {
+    font-size: 0.6rem;
+    padding: 10px 20px;
+    margin-top: 10px;
+}
+
+/* Retro Buttons */
+.retro-btn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.8rem;
+    padding: 15px 30px;
+    margin: 10px;
+    background: var(--dried-blood);
+    color: var(--bone-white);
+    border: 4px solid var(--fresh-blood);
+    cursor: pointer;
+    transition: all 0.1s ease;
+    text-transform: uppercase;
+    box-shadow: 
+        4px 4px 0 var(--void-black),
+        inset 0 0 20px rgba(0,0,0,0.3);
+}
+
+.retro-btn:hover {
+    background: var(--blood-red);
+    transform: translate(2px, 2px);
+    box-shadow: 
+        2px 2px 0 var(--void-black),
+        inset 0 0 20px rgba(0,0,0,0.3);
+    text-shadow: 0 0 10px var(--bone-white);
+}
+
+.retro-btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: none;
+}
+
+/* How To Play Screen */
+.how-to-content {
+    text-align: center;
+    z-index: 10;
+    max-width: 600px;
+}
+
+.how-to-content h2 {
+    font-size: 2rem;
+    color: var(--fresh-blood);
+    margin-bottom: 30px;
+    text-shadow: 3px 3px 0 var(--void-black);
+}
+
+.instructions {
+    text-align: left;
+    margin: 20px 0;
+}
+
+.instructions p {
+    font-size: 0.7rem;
+    margin: 10px 0;
+    color: var(--bone-white);
+    line-height: 1.6;
+}
+
+.control-header {
+    font-size: 0.8rem;
+    color: var(--hellfire-orange);
+    margin: 20px 0 10px 0;
+    text-shadow: 0 0 10px var(--hellfire-orange);
+}
+
+.control-header:first-child {
+    margin-top: 0;
+}
+
+/* Game Screen */
+#game-screen {
+    background: var(--void-black);
+}
+
+#game-canvas {
+    display: block;
+    background: #111;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+/* HUD */
+#hud {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.hud-label {
+    font-size: 0.5rem;
+    color: var(--text-dim);
+    margin-right: 8px;
+}
+
+#health-bar, #xp-bar {
+    display: flex;
+    align-items: center;
+}
+
+.bar-container {
+    width: 150px;
+    height: 16px;
+    background: var(--void-black);
+    border: 2px solid var(--text-dim);
+    position: relative;
+    overflow: hidden;
+}
+
+#health-fill {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, var(--fresh-blood) 0%, var(--blood-red) 100%);
+    transition: width 0.2s ease;
+    box-shadow: inset 0 0 10px rgba(255,255,255,0.2);
+}
+
+#xp-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(180deg, #BA55D3 0%, var(--xp-color) 100%);
+    transition: width 0.2s ease;
+    box-shadow: inset 0 0 10px rgba(255,255,255,0.2);
+}
+
+#health-text, #xp-text {
+    font-size: 0.5rem;
+    margin-left: 8px;
+    min-width: 60px;
+}
+
+#wave-info {
+    text-align: center;
+}
+
+#wave-text {
+    font-size: 1rem;
+    color: var(--hellfire-orange);
+    text-shadow: 0 0 10px var(--hellfire-orange);
+    display: block;
+}
+
+#kill-count {
+    font-size: 0.5rem;
+    color: var(--text-dim);
+}
+
+#weapon-display {
+    display: flex;
+    gap: 10px;
+}
+
+.weapon-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--void-black);
+    border: 2px solid var(--text-dim);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.4rem;
+    line-height: 1;
+    font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
+    overflow: hidden;
+    text-align: center;
+}
+
+/* Mute Button */
+.mute-button {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    background: var(--void-black);
+    border: 2px solid var(--text-dim);
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    pointer-events: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mute-button:hover {
+    border-color: var(--fresh-blood);
+    background: var(--dried-blood);
+}
+
+.mute-button.muted {
+    border-color: var(--blood-red);
+    opacity: 0.7;
+}
+
+/* Weapon Tooltip */
+.weapon-tooltip {
+    position: absolute;
+    top: 70px;
+    right: 70px;
+    background: var(--void-black);
+    border: 2px solid var(--fresh-blood);
+    padding: 12px 15px;
+    min-width: 200px;
+    max-width: 280px;
+    z-index: 200;
+    pointer-events: none;
+    box-shadow: 0 0 20px rgba(220, 20, 60, 0.5);
+}
+
+.weapon-tooltip.hidden {
+    display: none;
+}
+
+.tooltip-name {
+    font-size: 0.7rem;
+    color: var(--hellfire-orange);
+    margin-bottom: 5px;
+    text-shadow: 0 0 10px var(--hellfire-orange);
+}
+
+.tooltip-level {
+    font-size: 0.5rem;
+    color: var(--xp-color);
+    margin-bottom: 8px;
+}
+
+.tooltip-desc {
+    font-size: 0.5rem;
+    color: var(--bone-white);
+    line-height: 1.6;
+}
+
+/* Character Select Screen */
+#character-screen {
+    background: linear-gradient(180deg, 
+        var(--bg-darker) 0%, 
+        var(--corpse-purple) 30%,
+        var(--dried-blood) 70%,
+        var(--bg-darker) 100%
+    );
+}
+
+.character-content {
+    text-align: center;
+    z-index: 10;
+    max-width: 1100px;
+    padding: 20px;
+}
+
+.character-title {
+    font-size: 2rem;
+    color: var(--fresh-blood);
+    margin-bottom: 10px;
+    text-shadow: 3px 3px 0 var(--void-black);
+}
+
+.character-subtitle {
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    margin-bottom: 30px;
+}
+
+#character-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.character-card {
+    background: linear-gradient(180deg, var(--void-black) 0%, var(--dried-blood) 100%);
+    border: 3px solid var(--blood-red);
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.character-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--hellfire-orange);
+    box-shadow: 0 0 30px var(--hellfire-orange);
+}
+
+.character-card.selected {
+    border-color: var(--rot-green);
+    box-shadow: 0 0 30px var(--rot-green);
+}
+
+.character-avatar {
+    width: 60px;
+    height: 80px;
+    margin: 0 auto 10px;
+    position: relative;
+}
+
+.character-name {
+    font-size: 0.65rem;
+    color: var(--hellfire-orange);
+    margin-bottom: 5px;
+    text-shadow: 0 0 10px var(--hellfire-orange);
+}
+
+.character-tagline {
+    font-size: 0.45rem;
+    color: var(--xp-color);
+    margin-bottom: 8px;
+}
+
+.character-desc {
+    font-size: 0.45rem;
+    color: var(--bone-white);
+    font-style: italic;
+    line-height: 1.5;
+    margin-bottom: 10px;
+    min-height: 40px;
+}
+
+.character-weapon {
+    font-size: 0.5rem;
+    color: var(--text-dim);
+}
+
+.character-weapon span {
+    color: var(--fresh-blood);
+}
+
+@media (max-width: 900px) {
+    #character-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    #character-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .character-card {
+        padding: 10px;
+    }
+}
+
+/* Upgrade Screen */
+#upgrade-screen {
+    background: rgba(0, 0, 0, 0.95);
+}
+
+.upgrade-content {
+    text-align: center;
+    z-index: 10;
+}
+
+.upgrade-title {
+    font-size: 2rem;
+    color: var(--rot-green);
+    margin-bottom: 10px;
+    text-shadow: 3px 3px 0 var(--void-black);
+    animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.upgrade-subtitle {
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+}
+
+.level-display {
+    font-size: 1.5rem;
+    color: var(--hellfire-orange);
+    text-shadow: 0 0 20px var(--hellfire-orange);
+    margin-bottom: 30px;
+}
+
+#upgrade-choices {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 900px;
+}
+
+.upgrade-card {
+    width: 250px;
+    padding: 20px;
+    background: linear-gradient(180deg, var(--dried-blood) 0%, var(--void-black) 100%);
+    border: 3px solid var(--blood-red);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.upgrade-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--fresh-blood);
+    box-shadow: 0 0 30px var(--blood-red);
+}
+
+.upgrade-card .icon {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.upgrade-card .name {
+    font-size: 0.7rem;
+    color: var(--bone-white);
+    margin-bottom: 10px;
+}
+
+.upgrade-card .desc {
+    font-size: 0.5rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+}
+
+.upgrade-card.new-weapon {
+    border-color: var(--xp-color);
+}
+
+.upgrade-card.new-weapon:hover {
+    box-shadow: 0 0 30px var(--xp-color);
+}
+
+/* Boss Warning */
+#boss-warning {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 200;
+    animation: bossWarn 0.5s ease-in-out infinite;
+}
+
+@keyframes bossWarn {
+    0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.1); }
+}
+
+.warning-text {
+    font-size: 1.5rem;
+    color: var(--hellfire-orange);
+    text-shadow: 0 0 20px var(--hellfire-orange);
+}
+
+.boss-name {
+    font-size: 2rem;
+    color: var(--fresh-blood);
+    margin-top: 10px;
+    text-shadow: 0 0 30px var(--fresh-blood);
+}
+
+/* Game Over Screen */
+#game-over-screen {
+    background: linear-gradient(180deg, 
+        var(--bg-darker) 0%, 
+        var(--blood-red) 50%, 
+        var(--bg-darker) 100%
+    );
+}
+
+.game-over-content {
+    text-align: center;
+    z-index: 10;
+}
+
+.game-over-title {
+    font-size: 3rem;
+    color: var(--fresh-blood);
+    text-shadow: 
+        0 0 20px var(--blood-red),
+        4px 4px 0 var(--void-black);
+    animation: deathPulse 1s ease-in-out infinite;
+}
+
+@keyframes deathPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+.death-quip {
+    font-size: 0.6rem;
+    color: var(--flesh-pink);
+    margin: 20px 0;
+    font-style: italic;
+}
+
+.final-stats {
+    margin: 30px 0;
+}
+
+.final-stats p {
+    font-size: 0.6rem;
+    margin: 10px 0;
+    color: var(--bone-white);
+}
+
+.final-stats span {
+    color: var(--hellfire-orange);
+}
+
+/* Victory Screen */
+#victory-screen {
+    background: linear-gradient(180deg, 
+        var(--bg-darker) 0%, 
+        var(--rot-green) 50%, 
+        var(--bg-darker) 100%
+    );
+}
+
+.victory-content {
+    text-align: center;
+    z-index: 10;
+}
+
+.victory-title {
+    font-size: 3rem;
+    color: var(--rot-green);
+    text-shadow: 
+        0 0 20px var(--rot-green),
+        4px 4px 0 var(--void-black);
+    animation: victoryGlow 1s ease-in-out infinite;
+}
+
+@keyframes victoryGlow {
+    0%, 100% { 
+        text-shadow: 
+            0 0 20px var(--rot-green),
+            4px 4px 0 var(--void-black);
+    }
+    50% { 
+        text-shadow: 
+            0 0 40px var(--rot-green),
+            0 0 60px var(--rot-green),
+            4px 4px 0 var(--void-black);
+    }
+}
+
+.victory-quip {
+    font-size: 0.6rem;
+    color: var(--bone-white);
+    margin: 20px 0;
+    font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .game-title {
+        font-size: 2rem;
+        letter-spacing: 4px;
+    }
+    
+    .subtitle {
+        font-size: 0.7rem;
+        letter-spacing: 4px;
+    }
+    
+    .retro-btn {
+        font-size: 0.6rem;
+        padding: 12px 20px;
+    }
+    
+    #upgrade-choices {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .upgrade-card {
+        width: 90%;
+        max-width: 300px;
+    }
+    
+    #hud {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .bar-container {
+        width: 100px;
+    }
+}
+
+/* Screen shake effect class */
+.screen-shake {
+    animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(-5px, 5px); }
+    50% { transform: translate(5px, -5px); }
+    75% { transform: translate(-5px, -5px); }
+}
+

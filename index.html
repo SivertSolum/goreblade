@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GOREBLADE: Unholy Survivors</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Title Screen -->
+        <div id="title-screen" class="screen">
+            <div class="scanlines"></div>
+            <div class="title-content">
+                <h1 class="game-title">GOREBLADE</h1>
+                <h2 class="subtitle">UNHOLY SURVIVORS</h2>
+                <div class="skull-art">
+    ▄████▄
+   ██░░░░██
+  ██░▀░░▀░██
+  █░░░██░░░█
+  █░░░░░░░░█
+   ██░▄▄░██
+    ▀████▀
+                </div>
+                <p class="tagline">"They came for your soul... but you came for their butts."</p>
+                <button id="start-btn" class="retro-btn">► CHOOSE VICTIM</button>
+                <button id="how-to-btn" class="retro-btn">? HOW TO SLAY</button>
+                <button id="mute-btn-title" class="retro-btn mute-btn-menu">🔊 SOUND: ON</button>
+                <p class="controller-hint">🎮 Xbox Controller Supported!</p>
+                <p class="copyright">© 2024 HELL INDUSTRIES - "We Put The Fun In Funeral"</p>
+            </div>
+        </div>
+
+        <!-- Character Select Screen -->
+        <div id="character-screen" class="screen hidden">
+            <div class="scanlines"></div>
+            <div class="character-content">
+                <h2 class="character-title">CHOOSE YOUR VICTIM</h2>
+                <p class="character-subtitle">Each fool has their own starting weapon & unique bosses</p>
+                <div id="character-grid"></div>
+                <button id="back-to-menu-btn" class="retro-btn">◄ BACK TO MENU</button>
+            </div>
+        </div>
+
+        <!-- How To Play Screen -->
+        <div id="how-to-screen" class="screen hidden">
+            <div class="scanlines"></div>
+            <div class="how-to-content">
+                <h2>HOW TO SLAY</h2>
+                <div class="instructions">
+                    <h3 class="control-header">⌨️ KEYBOARD</h3>
+                    <p>► WASD or ARROW KEYS to move your sorry carcass</p>
+                    <p>► Weapons fire AUTOMATICALLY (because you're lazy)</p>
+                    <p>► M to mute/unmute sounds</p>
+                    
+                    <h3 class="control-header">🎮 XBOX CONTROLLER</h3>
+                    <p>► LEFT STICK to move around</p>
+                    <p>► A BUTTON to select upgrades</p>
+                    <p>► D-PAD to navigate upgrade choices</p>
+                    <p>► START to pause (just kidding, no pausing in hell)</p>
+                    
+                    <h3 class="control-header">📋 OBJECTIVES</h3>
+                    <p>► Collect XP gems from dead nerds</p>
+                    <p>► Survive waves of increasingly angry monsters</p>
+                    <p>► Pick upgrades between waves (choose wisely, dummy)</p>
+                    <p>► Kill the boss or die trying (probably the latter)</p>
+                </div>
+                <button id="back-btn" class="retro-btn">◄ BACK TO MENU</button>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen hidden">
+            <canvas id="game-canvas"></canvas>
+            <div id="hud">
+                <div id="health-bar">
+                    <span class="hud-label">MEAT:</span>
+                    <div class="bar-container">
+                        <div id="health-fill"></div>
+                    </div>
+                    <span id="health-text">100/100</span>
+                </div>
+                <div id="xp-bar">
+                    <span class="hud-label">LVL <span id="hud-level">1</span>:</span>
+                    <div class="bar-container">
+                        <div id="xp-fill"></div>
+                    </div>
+                    <span id="xp-text">0/100</span>
+                </div>
+                <div id="wave-info">
+                    <span id="wave-text">WAVE 1</span>
+                    <span id="kill-count">KILLS: 0</span>
+                </div>
+                <div id="weapon-display"></div>
+                <button id="mute-btn" class="mute-button" title="Toggle Sound">🔊</button>
+                <div id="weapon-tooltip" class="weapon-tooltip hidden">
+                    <div class="tooltip-name"></div>
+                    <div class="tooltip-level"></div>
+                    <div class="tooltip-desc"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upgrade Screen -->
+        <div id="upgrade-screen" class="screen hidden">
+            <div class="scanlines"></div>
+            <div class="upgrade-content">
+                <h2 class="upgrade-title">LEVEL UP!</h2>
+                <p class="upgrade-subtitle">Your soul collection pleases the dark gods</p>
+                <p id="player-level" class="level-display">LEVEL 2</p>
+                <div id="upgrade-choices"></div>
+            </div>
+        </div>
+
+        <!-- Boss Warning -->
+        <div id="boss-warning" class="hidden">
+            <div class="warning-text">⚠ BOSS APPROACHING ⚠</div>
+            <div class="boss-name"></div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="game-over-screen" class="screen hidden">
+            <div class="scanlines"></div>
+            <div class="game-over-content">
+                <h2 class="game-over-title">YOU DIED</h2>
+                <p class="death-quip"></p>
+                <div class="final-stats">
+                    <p>Waves Survived: <span id="final-waves">0</span></p>
+                    <p>Total Kills: <span id="final-kills">0</span></p>
+                    <p>Souls Collected: <span id="final-xp">0</span></p>
+                </div>
+                <button id="retry-btn" class="retro-btn">↻ TRY AGAIN, LOSER</button>
+                <button id="menu-btn" class="retro-btn">◄ BACK TO MENU</button>
+            </div>
+        </div>
+
+        <!-- Victory Screen -->
+        <div id="victory-screen" class="screen hidden">
+            <div class="scanlines"></div>
+            <div class="victory-content">
+                <h2 class="victory-title">YOU WON!</h2>
+                <p class="victory-quip">"Hell called. They want their employees back."</p>
+                <div class="final-stats">
+                    <p>Waves Conquered: <span id="victory-waves">0</span></p>
+                    <p>Total Massacred: <span id="victory-kills">0</span></p>
+                    <p>Souls Harvested: <span id="victory-xp">0</span></p>
+                </div>
+                <button id="play-again-btn" class="retro-btn">► MASSACRE AGAIN</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/controller.js"></script>
+    <script src="js/weapons.js"></script>
+    <script src="js/enemies.js"></script>
+    <script src="js/characters.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/particles.js"></script>
+    <script src="js/upgrades.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
+
