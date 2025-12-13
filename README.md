@@ -27,7 +27,7 @@ GOREBLADE: Unholy Survivors is an action roguelite auto-shooter where you contro
 - **24 Bosses** (4 unique bosses per character)
 - **Retro Atari-style pixel graphics**
 - **Procedural retro sound effects**
-- **🎵 Music soundtrack** during gameplay
+- **Music soundtrack** during gameplay
 - **Xbox Controller Support**
 - **Vampire Survivors-style progression** - level up by collecting souls!
 
@@ -58,78 +58,42 @@ GOREBLADE: Unholy Survivors is an action roguelite auto-shooter where you contro
 Each character has unique stats, a starting weapon, and **4 exclusive bosses** only they can fight!
 
 ### Derek the Death Dealer
-```
-   ████
-  ██░░██   "I used to be an accountant.
-  █░██░█    Now I account for bodies."
-   ████
-   █  █    Starting Weapon: 🩸 Blood Shooter
-```
+**Starting Weapon:** 🩸 Blood Shooter
 **Stats:** Balanced • Easy to Play
 
 ---
 
 ### Granny Graves
-```
-   ▓▓▓▓
-  ▓▓░░▓▓   "Back in my day, we killed
-  ▓░██░▓    demons UPHILL both ways!"
-   ▓▓▓▓
-   ▓  ▓    Starting Weapon: ⚔ Reaper Scythe
-```
+**Starting Weapon:** ⚔ Reaper Scythe
 **Stats:** 0.8x Speed • 1.3x Damage • Hard Mode
 
 ---
 
 ### Edgy Eddie
-```
-   ████
-  ██░░██   "You wouldn't understand.
-  █░██░█    My soul is darker than my eyeliner."
-   ████
-   █  █    Starting Weapon: 💜 Soul Seeker
-```
+**Starting Weapon:** 💜 Soul Seeker
 **Stats:** 1.3x Speed • 0.7x Health • Glass Cannon
 
 ---
 
 ### Chef Cleaver
-```
-   ████
-  ██░░██   "Tonight's special: YOU,
-  █░██░█    served with a side of PAIN!"
-   ████
-   █  █    Starting Weapon: 🥩 Meat Cannon
-```
+**Starting Weapon:** 🥩 Meat Cannon
 **Stats:** Explosive • Area Damage
 
 ---
 
 ### Disco Dave
-```
-   ████
-  ██░░██   "Stayin' alive? More like
-  █░██░█    SLAYIN' alive! Ah ah ah ah..."
-   ████
-   █  █    Starting Weapon: 🔥 Hellfire Nova
-```
+**Starting Weapon:** 🔥 Hellfire Nova
 **Stats:** Flashy • Multi-hit
 
 ---
 
 ### Nerdy Nancy
-```
-   ████
-  ██░░██   "According to my calculations,
-  █░██░█    you have a 0% chance of survival."
-   ████
-   █  █    Starting Weapon: 👻 Ghost Chain
-```
+Starting Weapon: 👻 Ghost Chain
 **Stats:** 1.2x XP Gain • Strategic
 
 ---
 
-## ⚔️ Weapons
+## Weapons
 
 You can hold up to **4 weapons** simultaneously. Choose wisely!
 
@@ -174,56 +138,6 @@ You can hold up to **4 weapons** simultaneously. Choose wisely!
 | 13 | 🌀 | Void Victor (Void Walker) | **Pulls player** towards it |
 | 14 | 🪞 | Danny Doppelganger | **Creates clones** when hit |
 | 15 | 👁️ | Nightmare Ned (Nightmare Spawn) | Phases + Teleports, ultimate enemy |
-
-### Enemy Sprites
-```
-ZOMBIE          SKELETON        BAT             BLOB
-  ████            ████          ▄█  █▄         ██████
- ██░░██          ██  ██          ████         ████████
- █ ▀▀ █          █ ░░ █          █░░█         ██ ○○ ██
-  ████            ████            ██           ██████
-
-GHOST           DEMON           WRAITH          CRAWLER
-  ▒▒▒▒            ████           ▓▓▓▓          ▄▄████▄▄
- ▒▒░░▒▒         ▲████▲          ▓░░▓▓         ╠══░░══╣
- ▒ ██ ▒         █ ▀▀ █          ▓ ▓▓          ╚══════╝
-  ~~~~            ████           ~~~~
-
-BLOATER         GOLEM           SPIDER          REVENANT
-  ▓███▓          ████▓           ░██░           ▓████▓
- ▓█░░█▓         ▓████▓          ▀████▀         ██░░██
- ▓█XX█▓         █ oo █          ▄████▄         █▀▀▀▀█
-  ▓███▓          ████           ░████░          ▓▓▓▓
-
-VOID WALKER     DOPPELGANGER    NIGHTMARE SPAWN
-   ▓▓▓▓           ░██░             ╔══╗
-  ▓◉◉◉▓          ░░██░░           ═◉◉◉═
-  ▓▓▓▓▓          ░░░░░░           ═════
-   ~~~~           ~~~~             ╚══╝
-```
-
----
-
-## 👿 Bosses
-
-Every 5 waves, face a boss! Each character has **4 unique bosses**.
-
-### Derek's Bosses (Default)
-```
-Wave 5:  CAPTAIN CHUNKY GUTS     Wave 10: BARON VON STINKBUTT
-         ████████████                    ████████████
-        ██░░░░░░░░░░██                  ██▲░░░░░░▲██
-        ██ ▀▀    ▀▀ ██                  ██ ══════ ██
-        ██  ██████  ██                  ████████████
-         ████████████                   ████ ▓▓ ████
-
-Wave 15: GHOST KING               Final: NIGHTMARE KAREN
-         ╔══════════╗                   ████████████
-        ▒▒▒▒▒▒▒▒▒▒▒▒                   █░█░█░█░█░█░█
-        ▒▒ ██  ██ ▒▒                   ██▀▀▀▀▀▀▀▀██
-        ▒▒▒▒▒▒▒▒▒▒▒▒                   █ ◉◉◉◉◉◉◉◉ █
-          ~~~~~~~~                      ████████████
-```
 
 ---
 
@@ -277,7 +191,6 @@ Wave 15: GHOST KING               Final: NIGHTMARE KAREN
 - Check out the console for a special message!
 
 ---
-
 
 ## Credits
 
