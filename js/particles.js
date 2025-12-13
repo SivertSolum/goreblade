@@ -83,9 +83,24 @@ class ParticleSystem {
         }
     }
     
+    // Get particle multiplier based on settings
+    getParticleMultiplier() {
+        if (typeof GameSettings === 'undefined') return 1;
+        switch(GameSettings.particleLevel) {
+            case 0: return 0;    // Off
+            case 1: return 0.5;  // Low
+            case 2: return 1;    // High
+            default: return 1;
+        }
+    }
+    
     // Blood splatter effect
     bloodSplatter(x, y, count = 10) {
-        for (let i = 0; i < count; i++) {
+        const multiplier = this.getParticleMultiplier();
+        if (multiplier === 0) return;
+        
+        const actualCount = Math.ceil(count * multiplier);
+        for (let i = 0; i < actualCount; i++) {
             const angle = Utils.random(0, Math.PI * 2);
             const speed = Utils.random(2, 6);
             
@@ -102,7 +117,11 @@ class ParticleSystem {
     
     // Bigger gore explosion for deaths
     goreExplosion(x, y, count = 20) {
-        for (let i = 0; i < count; i++) {
+        const multiplier = this.getParticleMultiplier();
+        if (multiplier === 0) return;
+        
+        const actualCount = Math.ceil(count * multiplier);
+        for (let i = 0; i < actualCount; i++) {
             const angle = Utils.random(0, Math.PI * 2);
             const speed = Utils.random(3, 8);
             

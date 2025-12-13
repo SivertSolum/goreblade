@@ -27,11 +27,73 @@
     ▀████▀
                 </div>
                 <p class="tagline">"They came for your soul... but you came for their butts."</p>
-                <button id="start-btn" class="retro-btn">► CHOOSE VICTIM</button>
-                <button id="how-to-btn" class="retro-btn">? HOW TO SLAY</button>
-                <button id="mute-btn-title" class="retro-btn mute-btn-menu">🔊 SOUND: ON</button>
+                <button id="start-btn" class="retro-btn menu-btn" data-menu-index="0">► CHOOSE VICTIM</button>
+                <button id="how-to-btn" class="retro-btn menu-btn" data-menu-index="1">? HOW TO SLAY</button>
+                <button id="settings-btn" class="retro-btn menu-btn" data-menu-index="2">⚙ SETTINGS</button>
                 <p class="controller-hint">🎮 Xbox Controller Supported!</p>
                 <p class="copyright">© 2024 HELL INDUSTRIES - "We Put The Fun In Funeral"</p>
+            </div>
+        </div>
+
+        <!-- Settings Screen -->
+        <div id="settings-screen" class="screen hidden">
+            <div class="scanlines"></div>
+            <div class="settings-content">
+                <h2>⚙ SETTINGS</h2>
+                
+                <div class="settings-section">
+                    <h3>🔊 AUDIO</h3>
+                    
+                    <div class="setting-row" data-setting-index="0">
+                        <label>Master Volume</label>
+                        <div class="slider-container">
+                            <input type="range" id="master-volume" min="0" max="100" value="30" class="retro-slider">
+                            <span id="master-volume-value">30%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-row" data-setting-index="1">
+                        <label>Music Volume</label>
+                        <div class="slider-container">
+                            <input type="range" id="music-volume" min="0" max="100" value="40" class="retro-slider">
+                            <span id="music-volume-value">40%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-row" data-setting-index="2">
+                        <label>Sound Effects</label>
+                        <div class="slider-container">
+                            <input type="range" id="sfx-volume" min="0" max="100" value="30" class="retro-slider">
+                            <span id="sfx-volume-value">30%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3>🎨 GRAPHICS</h3>
+                    
+                    <div class="setting-row" data-setting-index="3">
+                        <label>Scanlines</label>
+                        <button id="toggle-scanlines" class="retro-btn setting-toggle">ON</button>
+                    </div>
+                    
+                    <div class="setting-row" data-setting-index="4">
+                        <label>Screen Shake</label>
+                        <button id="toggle-screenshake" class="retro-btn setting-toggle">ON</button>
+                    </div>
+                    
+                    <div class="setting-row" data-setting-index="5">
+                        <label>Blood Particles</label>
+                        <button id="toggle-particles" class="retro-btn setting-toggle">HIGH</button>
+                    </div>
+                    
+                    <div class="setting-row" data-setting-index="6">
+                        <label>Enemy Outlines</label>
+                        <button id="toggle-outlines" class="retro-btn setting-toggle">ON</button>
+                    </div>
+                </div>
+                
+                <button id="settings-back-btn" class="retro-btn menu-btn" data-setting-index="7">◄ BACK TO MENU</button>
             </div>
         </div>
 

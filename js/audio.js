@@ -10,6 +10,12 @@ class AudioManager {
         this.enabled = true;
         this.muted = false;
         this.volume = 0.3;
+        this.musicVolume = 0.4;
+        
+        // Music system
+        this.music = null;
+        this.currentTrack = null;
+        this.musicPlaying = false;
     }
     
     init() {
@@ -22,11 +28,91 @@ class AudioManager {
             console.warn('Web Audio not supported');
             this.enabled = false;
         }
+        
+        // Initialize music element
+        this.initMusic();
+    }
+    
+    initMusic() {
+        this.music = new Audio();
+        this.music.loop = true;
+        this.music.volume = this.muted ? 0 : this.musicVolume;
+        
+        // Preload the main gameplay track
+        this.music.src = 'music/goreblade_main.mp3';
+        this.music.load();
+        
+        // Handle music end (backup for loop)
+        this.music.addEventListener('ended', () => {
+            if (this.musicPlaying) {
+                this.music.currentTime = 0;
+                this.music.play().catch(() => {});
+            }
+        });
+    }
+    
+    // Start playing music
+    playMusic(track = 'main') {
+        if (!this.music) return;
+        
+        // If different track requested, load it
+        if (track !== this.currentTrack) {
+            switch(track) {
+                case 'main':
+                    this.music.src = 'music/goreblade_main.mp3';
+                    break;
+                // Add more tracks here as needed
+                // case 'boss':
+                //     this.music.src = 'music/goreblade_boss.mp3';
+                //     break;
+                default:
+                    this.music.src = 'music/goreblade_main.mp3';
+            }
+            this.currentTrack = track;
+        }
+        
+        this.musicPlaying = true;
+        this.music.volume = this.muted ? 0 : this.musicVolume;
+        this.music.play().catch(e => {
+            console.log('Music autoplay blocked - will start on user interaction');
+        });
+    }
+    
+    // Stop music
+    stopMusic() {
+        if (!this.music) return;
+        this.musicPlaying = false;
+        this.music.pause();
+        this.music.currentTime = 0;
+    }
+    
+    // Pause music
+    pauseMusic() {
+        if (!this.music) return;
+        this.music.pause();
+    }
+    
+    // Resume music
+    resumeMusic() {
+        if (!this.music || !this.musicPlaying) return;
+        this.music.play().catch(() => {});
+    }
+    
+    // Set music volume (0-1)
+    setMusicVolume(vol) {
+        this.musicVolume = vol;
+        if (this.music && !this.muted) {
+            this.music.volume = vol;
+        }
     }
     
     resume() {
         if (this.audioContext && this.audioContext.state === 'suspended') {
             this.audioContext.resume();
+        }
+        // Also resume music if it was playing
+        if (this.musicPlaying && this.music && this.music.paused) {
+            this.music.play().catch(() => {});
         }
     }
     
@@ -42,6 +128,10 @@ class AudioManager {
         if (this.masterGain) {
             this.masterGain.gain.value = this.muted ? 0 : this.volume;
         }
+        // Also mute/unmute music
+        if (this.music) {
+            this.music.volume = this.muted ? 0 : this.musicVolume;
+        }
         return this.muted;
     }
     
@@ -49,6 +139,10 @@ class AudioManager {
         this.muted = muted;
         if (this.masterGain) {
             this.masterGain.gain.value = this.muted ? 0 : this.volume;
+        }
+        // Also mute/unmute music
+        if (this.music) {
+            this.music.volume = this.muted ? 0 : this.musicVolume;
         }
     }
     
@@ -303,6 +397,66 @@ class AudioManager {
             osc.stop(time + durations[i]);
             
             time += durations[i];
+        });
+    }
+    
+    // Explosion sound (for bloaters, etc)
+    playExplosion() {
+        if (!this.enabled || !this.audioContext) return;
+        
+        const now = this.audioContext.currentTime;
+        
+        // Low rumble
+        const osc1 = this.audioContext.createOscillator();
+        const gain1 = this.audioContext.createGain();
+        osc1.connect(gain1);
+        gain1.connect(this.masterGain);
+        osc1.type = 'sawtooth';
+        osc1.frequency.setValueAtTime(80, now);
+        osc1.frequency.exponentialRampToValueAtTime(30, now + 0.3);
+        gain1.gain.setValueAtTime(0.3, now);
+        gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+        osc1.start(now);
+        osc1.stop(now + 0.3);
+        
+        // Noise burst
+        const bufferSize = this.audioContext.sampleRate * 0.2;
+        const buffer = this.audioContext.createBuffer(1, bufferSize, this.audioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufferSize, 1.5);
+        }
+        const noise = this.audioContext.createBufferSource();
+        const gain2 = this.audioContext.createGain();
+        noise.buffer = buffer;
+        noise.connect(gain2);
+        gain2.connect(this.masterGain);
+        gain2.gain.setValueAtTime(0.4, now);
+        noise.start(now);
+    }
+    
+    // Power up / upgrade sound
+    playPowerUp() {
+        if (!this.enabled || !this.audioContext) return;
+        
+        const notes = [440, 554, 659]; // A4, C#5, E5 - major chord arpeggio
+        
+        notes.forEach((freq, i) => {
+            const osc = this.audioContext.createOscillator();
+            const gain = this.audioContext.createGain();
+            
+            osc.connect(gain);
+            gain.connect(this.masterGain);
+            
+            const startTime = this.audioContext.currentTime + i * 0.08;
+            
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, startTime);
+            gain.gain.setValueAtTime(0.15, startTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, startTime + 0.2);
+            
+            osc.start(startTime);
+            osc.stop(startTime + 0.2);
         });
     }
 }

@@ -743,6 +743,144 @@ body {
     font-style: italic;
 }
 
+/* Settings Screen */
+#settings-screen {
+    background: linear-gradient(180deg, 
+        var(--bg-darker) 0%, 
+        #1a0a1a 50%, 
+        var(--bg-darker) 100%
+    );
+}
+
+.settings-content {
+    text-align: center;
+    z-index: 10;
+    max-width: 500px;
+    width: 90%;
+}
+
+.settings-content h2 {
+    font-size: 1.5rem;
+    color: var(--blood-red);
+    text-shadow: 0 0 10px var(--blood-red);
+    margin-bottom: 20px;
+}
+
+.settings-section {
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid var(--blood-red);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.settings-section h3 {
+    font-size: 0.7rem;
+    color: var(--bone-white);
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.setting-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: background 0.2s;
+}
+
+.setting-row:last-child {
+    border-bottom: none;
+}
+
+.setting-row.selected {
+    background: rgba(139, 0, 0, 0.3);
+    outline: 2px solid var(--blood-red);
+}
+
+.setting-row label {
+    font-size: 0.5rem;
+    color: var(--bone-white);
+}
+
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.slider-container span {
+    font-size: 0.5rem;
+    color: var(--blood-red);
+    min-width: 40px;
+}
+
+/* Retro Slider */
+.retro-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 120px;
+    height: 8px;
+    background: var(--void-black);
+    border: 2px solid var(--blood-red);
+    border-radius: 0;
+    cursor: pointer;
+}
+
+.retro-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 20px;
+    background: var(--blood-red);
+    border: 2px solid var(--bone-white);
+    cursor: pointer;
+}
+
+.retro-slider::-moz-range-thumb {
+    width: 16px;
+    height: 20px;
+    background: var(--blood-red);
+    border: 2px solid var(--bone-white);
+    cursor: pointer;
+    border-radius: 0;
+}
+
+.retro-slider:focus {
+    outline: none;
+    box-shadow: 0 0 10px var(--blood-red);
+}
+
+/* Setting Toggle Button */
+.setting-toggle {
+    font-size: 0.5rem !important;
+    padding: 6px 15px !important;
+    min-width: 60px;
+}
+
+.setting-toggle.off {
+    background: var(--void-black);
+    color: #666;
+    border-color: #666;
+}
+
+/* Menu button focus/selection styling */
+.menu-btn.selected,
+.menu-btn:focus {
+    outline: none;
+    background: var(--blood-red);
+    color: var(--void-black);
+    box-shadow: 0 0 20px var(--blood-red), inset 0 0 10px rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.character-card.keyboard-selected {
+    outline: 3px solid var(--bone-white);
+    box-shadow: 0 0 20px var(--blood-red);
+    transform: scale(1.05);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .game-title {

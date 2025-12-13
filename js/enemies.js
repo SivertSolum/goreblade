@@ -3,8 +3,9 @@
 // Enemy System
 // ============================================
 
-// Enemy type definitions
+// Enemy type definitions - One new enemy unlocks each wave!
 const ENEMY_TYPES = {
+    // WAVE 1 - Basic starter enemy
     ZOMBIE: {
         id: 'zombie',
         name: 'Rotting Randy',
@@ -19,6 +20,7 @@ const ENEMY_TYPES = {
         minWave: 1
     },
     
+    // WAVE 2 - Fast but fragile
     SKELETON: {
         id: 'skeleton',
         name: 'Boney Tony',
@@ -30,53 +32,10 @@ const ENEMY_TYPES = {
         speed: 2,
         xpValue: 8,
         spawnWeight: 30,
-        minWave: 1
+        minWave: 2
     },
     
-    GHOST: {
-        id: 'ghost',
-        name: 'Transparent Terry',
-        color: '#4169E1',
-        accentColor: '#87CEEB',
-        size: 16,
-        health: 25,
-        damage: 12,
-        speed: 1.5,
-        xpValue: 15,
-        spawnWeight: 20,
-        minWave: 2,
-        phasing: true // Can phase through briefly
-    },
-    
-    DEMON: {
-        id: 'demon',
-        name: 'Demented Derek',
-        color: '#DC143C',
-        accentColor: '#8B0000',
-        size: 18,
-        health: 40,
-        damage: 15,
-        speed: 1.8,
-        xpValue: 25,
-        spawnWeight: 15,
-        minWave: 3
-    },
-    
-    BLOB: {
-        id: 'blob',
-        name: 'Blobby Bobby',
-        color: '#32CD32',
-        accentColor: '#228B22',
-        size: 20,
-        health: 60,
-        damage: 8,
-        speed: 0.8,
-        xpValue: 20,
-        spawnWeight: 10,
-        minWave: 2,
-        splitsOnDeath: true
-    },
-    
+    // WAVE 3 - Erratic movement
     BAT: {
         id: 'bat',
         name: 'Bitey McBatface',
@@ -88,10 +47,58 @@ const ENEMY_TYPES = {
         speed: 3,
         xpValue: 5,
         spawnWeight: 25,
-        minWave: 1,
-        erratic: true // Moves erratically
+        minWave: 3,
+        erratic: true
     },
     
+    // WAVE 4 - Splits on death
+    BLOB: {
+        id: 'blob',
+        name: 'Blobby Bobby',
+        color: '#32CD32',
+        accentColor: '#228B22',
+        size: 20,
+        health: 60,
+        damage: 8,
+        speed: 0.8,
+        xpValue: 20,
+        spawnWeight: 15,
+        minWave: 4,
+        splitsOnDeath: true
+    },
+    
+    // WAVE 5 - Can phase through attacks
+    GHOST: {
+        id: 'ghost',
+        name: 'Transparent Terry',
+        color: '#4169E1',
+        accentColor: '#87CEEB',
+        size: 16,
+        health: 25,
+        damage: 12,
+        speed: 1.5,
+        xpValue: 15,
+        spawnWeight: 20,
+        minWave: 5,
+        phasing: true
+    },
+    
+    // WAVE 6 - Strong and aggressive
+    DEMON: {
+        id: 'demon',
+        name: 'Demented Derek',
+        color: '#DC143C',
+        accentColor: '#8B0000',
+        size: 18,
+        health: 40,
+        damage: 15,
+        speed: 1.8,
+        xpValue: 25,
+        spawnWeight: 15,
+        minWave: 6
+    },
+    
+    // WAVE 7 - Teleporting menace
     WRAITH: {
         id: 'wraith',
         name: 'Wrathy Wendy',
@@ -102,8 +109,137 @@ const ENEMY_TYPES = {
         damage: 20,
         speed: 2.5,
         xpValue: 30,
+        spawnWeight: 12,
+        minWave: 7,
+        teleports: true
+    },
+    
+    // WAVE 8 - Crawling horror
+    CRAWLER: {
+        id: 'crawler',
+        name: 'Creepy Craig',
+        color: '#8B4513',
+        accentColor: '#654321',
+        size: 12,
+        health: 35,
+        damage: 12,
+        speed: 2.2,
+        xpValue: 18,
+        spawnWeight: 20,
+        minWave: 8
+    },
+    
+    // WAVE 9 - Explodes on death
+    BLOATER: {
+        id: 'bloater',
+        name: 'Bloated Barry',
+        color: '#9ACD32',
+        accentColor: '#6B8E23',
+        size: 22,
+        health: 45,
+        damage: 8,
+        speed: 0.9,
+        xpValue: 22,
+        spawnWeight: 12,
+        minWave: 9,
+        explodesOnDeath: true,
+        explosionDamage: 15,
+        explosionRadius: 50
+    },
+    
+    // WAVE 10 - Armored tank
+    GOLEM: {
+        id: 'golem',
+        name: 'Gregory the Golem',
+        color: '#708090',
+        accentColor: '#2F4F4F',
+        size: 24,
+        health: 100,
+        damage: 20,
+        speed: 0.6,
+        xpValue: 40,
         spawnWeight: 8,
-        minWave: 4,
+        minWave: 10
+    },
+    
+    // WAVE 11 - Fast swarm
+    SPIDER: {
+        id: 'spider',
+        name: 'Spindly Steve',
+        color: '#1a1a1a',
+        accentColor: '#8B0000',
+        size: 8,
+        health: 8,
+        damage: 4,
+        speed: 3.5,
+        xpValue: 4,
+        spawnWeight: 35,
+        minWave: 11
+    },
+    
+    // WAVE 12 - Resurrects once
+    REVENANT: {
+        id: 'revenant',
+        name: 'Reginald the Revenant',
+        color: '#4A0000',
+        accentColor: '#8B0000',
+        size: 18,
+        health: 50,
+        damage: 18,
+        speed: 1.4,
+        xpValue: 35,
+        spawnWeight: 10,
+        minWave: 12,
+        resurrects: true
+    },
+    
+    // WAVE 13 - Pulls player closer
+    VOID_WALKER: {
+        id: 'void_walker',
+        name: 'Void Victor',
+        color: '#0a0a0a',
+        accentColor: '#4B0082',
+        size: 20,
+        health: 55,
+        damage: 22,
+        speed: 1.0,
+        xpValue: 38,
+        spawnWeight: 8,
+        minWave: 13,
+        pullsPlayer: true,
+        pullStrength: 0.3
+    },
+    
+    // WAVE 14 - Creates clones
+    DOPPELGANGER: {
+        id: 'doppelganger',
+        name: 'Danny Doppelganger',
+        color: '#DDA0A0',
+        accentColor: '#B08080',
+        size: 14,
+        health: 40,
+        damage: 14,
+        speed: 1.6,
+        xpValue: 30,
+        spawnWeight: 10,
+        minWave: 14,
+        clonesOnHit: true
+    },
+    
+    // WAVE 15 - Ultimate enemy
+    NIGHTMARE_SPAWN: {
+        id: 'nightmare_spawn',
+        name: 'Nightmare Ned',
+        color: '#4B0082',
+        accentColor: '#FF00FF',
+        size: 22,
+        health: 80,
+        damage: 25,
+        speed: 2.0,
+        xpValue: 50,
+        spawnWeight: 6,
+        minWave: 15,
+        phasing: true,
         teleports: true
     }
 };
@@ -207,6 +343,21 @@ class Enemy {
         
         this.splitsOnDeath = this.data.splitsOnDeath || false;
         
+        // New enemy behaviors
+        this.explodesOnDeath = this.data.explodesOnDeath || false;
+        this.explosionDamage = this.data.explosionDamage || 15;
+        this.explosionRadius = this.data.explosionRadius || 50;
+        
+        this.resurrects = this.data.resurrects || false;
+        this.hasResurrected = false;
+        
+        this.pullsPlayer = this.data.pullsPlayer || false;
+        this.pullStrength = this.data.pullStrength || 0.3;
+        
+        this.clonesOnHit = this.data.clonesOnHit || false;
+        this.cloneCount = 0;
+        this.maxClones = 2;
+        
         // Animation
         this.animTimer = 0;
         this.hitFlash = 0;
@@ -272,6 +423,8 @@ class Enemy {
                 }
             }
             
+            // Void walker pull effect is calculated separately
+            
             // Apply movement
             this.vx = moveX;
             this.vy = moveY;
@@ -285,6 +438,25 @@ class Enemy {
         this.y = Utils.clamp(this.y, -margin, canvasHeight + margin);
     }
     
+    // Get pull effect on player (for void_walker)
+    getPullEffect(playerX, playerY) {
+        if (!this.pullsPlayer || this.isDying) return { x: 0, y: 0 };
+        
+        const dx = this.x - playerX;
+        const dy = this.y - playerY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        
+        // Only pull within range
+        if (dist > 200 || dist < 1) return { x: 0, y: 0 };
+        
+        // Stronger pull when closer
+        const pullForce = this.pullStrength * (1 - dist / 200);
+        return {
+            x: (dx / dist) * pullForce,
+            y: (dy / dist) * pullForce
+        };
+    }
+    
     takeDamage(amount) {
         if (this.isDying || this.isPhased) return false;
         
@@ -292,7 +464,21 @@ class Enemy {
         this.hitFlash = 100;
         Audio.playHit();
         
+        // Doppelganger clones when hit
+        if (this.clonesOnHit && this.cloneCount < this.maxClones && this.health > 0) {
+            this.shouldSpawnClone = true;
+            this.cloneCount++;
+        }
+        
         if (this.health <= 0) {
+            // Revenant resurrects once
+            if (this.resurrects && !this.hasResurrected) {
+                this.hasResurrected = true;
+                this.health = this.maxHealth * 0.5;
+                this.hitFlash = 500;
+                Audio.playPowerUp();
+                return false;
+            }
             this.die();
             return true;
         }
@@ -303,6 +489,11 @@ class Enemy {
         this.isDying = true;
         this.deathTimer = 0;
         Audio.playDeath();
+        
+        // Mark for explosion if bloater
+        if (this.explodesOnDeath) {
+            this.shouldExplode = true;
+        }
     }
     
     draw(ctx) {
@@ -316,6 +507,21 @@ class Enemy {
             ctx.translate(-this.x, -this.y);
         }
         
+        const s = this.size;
+        const wobble = Math.sin(this.animTimer / 100) * 2;
+        
+        // RED OUTLINE - Draw first (behind enemy) for visibility
+        // Check if outlines are enabled in settings
+        const outlinesEnabled = typeof GameSettings !== 'undefined' ? GameSettings.enemyOutlines : true;
+        if (!this.isDying && !this.isPhased && outlinesEnabled) {
+            const outlineSize = 2;
+            ctx.fillStyle = '#FF0000';
+            ctx.shadowColor = '#FF0000';
+            ctx.shadowBlur = 6;
+            ctx.fillRect(this.x - s/2 - outlineSize, this.y - s/2 + wobble - outlineSize, s + outlineSize*2, s + outlineSize*2);
+            ctx.shadowBlur = 0;
+        }
+        
         // Hit flash
         if (this.hitFlash > 0) {
             ctx.fillStyle = '#FFF';
@@ -325,9 +531,6 @@ class Enemy {
         } else {
             ctx.fillStyle = this.color;
         }
-        
-        const s = this.size;
-        const wobble = Math.sin(this.animTimer / 100) * 2;
         
         // Draw based on enemy type
         switch(this.data.id) {
@@ -418,6 +621,123 @@ class Enemy {
                 ctx.shadowBlur = 10;
                 ctx.fillRect(this.x - s/4, this.y - s/4, s/6, s/6);
                 ctx.fillRect(this.x + s/8, this.y - s/4, s/6, s/6);
+                break;
+            
+            case 'crawler':
+                // Low crawling creature with multiple legs
+                ctx.fillRect(this.x - s/2, this.y, s, s/3);
+                ctx.fillStyle = this.accentColor;
+                for (let i = 0; i < 4; i++) {
+                    const legX = this.x - s/2 + (i * s/3) + s/6;
+                    const legWobble = Math.sin(Date.now() / 50 + i) * 2;
+                    ctx.fillRect(legX - s/10, this.y + s/3 + legWobble, s/8, s/4);
+                    ctx.fillRect(legX - s/10, this.y - s/6 - legWobble, s/8, s/4);
+                }
+                ctx.fillStyle = '#FFFF00';
+                ctx.fillRect(this.x - s/4, this.y - s/8, s/8, s/8);
+                ctx.fillRect(this.x + s/8, this.y - s/8, s/8, s/8);
+                break;
+            
+            case 'bloater':
+                // Swollen bulging body
+                ctx.fillRect(this.x - s/2, this.y - s/2, s, s);
+                ctx.fillStyle = this.accentColor;
+                ctx.fillRect(this.x - s/2 - s/6, this.y - s/4, s/4, s/3);
+                ctx.fillRect(this.x + s/3, this.y - s/3, s/4, s/4);
+                ctx.fillStyle = '#FFFF00';
+                ctx.fillRect(this.x - s/4, this.y - s/4, s/10, s/10);
+                ctx.fillRect(this.x + s/6, this.y, s/10, s/10);
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(this.x - s/4, this.y - s/4, s/8, s/8);
+                ctx.fillRect(this.x + s/8, this.y - s/4, s/8, s/8);
+                break;
+            
+            case 'golem':
+                // Large stone body
+                ctx.fillRect(this.x - s/2, this.y - s/2, s, s);
+                ctx.fillStyle = this.accentColor;
+                ctx.fillRect(this.x - s/3, this.y - s/2, s/8, s/2);
+                ctx.fillRect(this.x + s/6, this.y - s/4, s/8, s/3);
+                ctx.fillStyle = '#00FFFF';
+                ctx.shadowColor = '#00FFFF';
+                ctx.shadowBlur = 8;
+                ctx.fillRect(this.x - s/3, this.y - s/4, s/6, s/6);
+                ctx.fillRect(this.x + s/6, this.y - s/4, s/6, s/6);
+                ctx.fillStyle = this.color;
+                ctx.fillRect(this.x - s/2 - s/4, this.y - s/3, s/4, s/3);
+                ctx.fillRect(this.x + s/2, this.y - s/3, s/4, s/3);
+                break;
+            
+            case 'spider':
+                // Small body with 8 legs
+                ctx.fillRect(this.x - s/3, this.y - s/3, s/1.5, s/1.5);
+                ctx.fillStyle = this.accentColor;
+                for (let i = 0; i < 4; i++) {
+                    const wb = Math.sin(Date.now() / 30 + i * 2) * 2;
+                    ctx.fillRect(this.x - s/3 - s/2 + wb, this.y - s/4 + i * s/6, s/2, s/12);
+                    ctx.fillRect(this.x + s/3 - wb, this.y - s/4 + i * s/6, s/2, s/12);
+                }
+                ctx.fillStyle = '#FF0000';
+                ctx.fillRect(this.x - s/5, this.y - s/6, s/10, s/10);
+                ctx.fillRect(this.x + s/10, this.y - s/6, s/10, s/10);
+                break;
+            
+            case 'revenant':
+                // Skeletal warrior
+                ctx.fillRect(this.x - s/2, this.y - s/2, s, s);
+                ctx.fillStyle = this.accentColor;
+                ctx.fillRect(this.x - s/2 - s/6, this.y - s/2, s/4, s * 1.2);
+                ctx.fillRect(this.x + s/3, this.y - s/2, s/4, s * 1.2);
+                ctx.fillStyle = '#404040';
+                ctx.fillRect(this.x - s/3, this.y - s/2 - s/4, s/1.5, s/3);
+                ctx.fillStyle = '#FF4500';
+                ctx.shadowColor = '#FF4500';
+                ctx.shadowBlur = 12;
+                ctx.fillRect(this.x - s/4, this.y - s/3, s/6, s/8);
+                ctx.fillRect(this.x + s/10, this.y - s/3, s/6, s/8);
+                break;
+            
+            case 'void_walker':
+                // Dark swirling entity
+                const voidPulse = Math.sin(Date.now() / 200) * 3;
+                ctx.fillRect(this.x - s/2 - voidPulse, this.y - s/2 - voidPulse, s + voidPulse*2, s + voidPulse*2);
+                ctx.fillStyle = this.accentColor;
+                ctx.fillRect(this.x - s/3, this.y - s/3, s/1.5, s/1.5);
+                ctx.fillStyle = '#FF00FF';
+                ctx.shadowColor = '#FF00FF';
+                ctx.shadowBlur = 15;
+                ctx.fillRect(this.x - s/6, this.y - s/6, s/3, s/3);
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(this.x - s/10, this.y - s/10, s/5, s/5);
+                break;
+            
+            case 'doppelganger':
+                // Mirror-like humanoid
+                ctx.fillRect(this.x - s/2, this.y - s/2, s, s);
+                const mirrorShift = Math.sin(Date.now() / 150) * 0.5 + 0.5;
+                ctx.fillStyle = `rgba(255, 255, 255, ${mirrorShift * 0.3})`;
+                ctx.fillRect(this.x - s/3, this.y - s/3, s/1.5, s/1.5);
+                ctx.fillStyle = '#8B0000';
+                ctx.fillRect(this.x - s/4, this.y - s/4, s/8, s/8);
+                ctx.fillRect(this.x + s/8, this.y - s/4, s/8, s/8);
+                ctx.fillRect(this.x - s/4, this.y + s/8, s/2, s/10);
+                break;
+            
+            case 'nightmare_spawn':
+                // Eldritch horror
+                const nPulse = Math.sin(Date.now() / 100) * 4;
+                ctx.shadowColor = this.accentColor;
+                ctx.shadowBlur = 20;
+                ctx.fillRect(this.x - s/2 - nPulse, this.y - s/2 - nPulse, s + nPulse*2, s + nPulse*2);
+                ctx.fillStyle = this.accentColor;
+                for (let i = 0; i < 6; i++) {
+                    const ta = (Date.now() / 500 + i * Math.PI / 3);
+                    ctx.fillRect(this.x + Math.cos(ta) * s * 0.7 - s/10, this.y + Math.sin(ta) * s * 0.7 - s/10, s/5, s/5);
+                }
+                ctx.fillStyle = '#FF0000';
+                const eo = Math.sin(Date.now() / 200) * 2;
+                ctx.fillRect(this.x - s/4 + eo, this.y - s/4, s/8, s/8);
+                ctx.fillRect(this.x + s/8 - eo, this.y - s/4, s/8, s/8);
                 break;
             
             // BOSS TYPES

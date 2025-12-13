@@ -252,6 +252,17 @@ class Player {
         ctx.scale(this.facing, 1);
         ctx.translate(-this.x, -this.y);
         
+        // WHITE OUTLINE - Draw first (behind character)
+        const outlineSize = 2;
+        ctx.fillStyle = '#FFFFFF';
+        ctx.shadowColor = '#FFFFFF';
+        ctx.shadowBlur = 4;
+        // Outline body
+        ctx.fillRect(this.x - s/2 - outlineSize, this.y - s/4 + wobble - outlineSize, s + outlineSize*2, s + outlineSize*2);
+        // Outline head
+        ctx.fillRect(this.x - s/2.5 - outlineSize, this.y - s/2 - s/3 + wobble - outlineSize, s/1.2 + outlineSize*2, s/1.2 + outlineSize*2);
+        ctx.shadowBlur = 0;
+        
         // Body
         ctx.fillStyle = this.clothColor;
         ctx.fillRect(this.x - s/2, this.y - s/4 + wobble, s, s);

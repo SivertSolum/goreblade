@@ -1,117 +1,291 @@
-# GOREBLADE: Unholy Survivors
+# GOREBLADE: Unholy Survivors (yet another Vampire Survivors ripoff)
 
-A retro-styled horror auto-shooter roguelite game inspired by Vampire Survivors, built for the browser and hostable on GitHub Pages.
+> *"They came for your soul... but you came for their butts."*
 
-![GOREBLADE](https://img.shields.io/badge/Genre-Action%20Roguelite-red)
+A retro-styled horror auto-shooter roguelite game inspired by Vampire Survivors, built for the browser. Works with keyboard, AND game controller!
+
+![Genre](https://img.shields.io/badge/Genre-Action%20Roguelite-red)
 ![Status](https://img.shields.io/badge/Status-Playable-green)
-![License](https://img.shields.io/badge/License-MIT-blue)
+![Platform](https://img.shields.io/badge/Platform-Browser-blue)
+![Controller](https://img.shields.io/badge/Controller-Xbox%20Supported-green)
 
-## 🎮 Play Now
+---
 
-Simply open `index.html` in your browser or host on GitHub Pages!
+## [🎮 Click Here To Play Now 🎮](https://sivertsolum.github.io/goreblade/)
 
-## 📖 About
 
-**"They came for your soul... but you came for their butts."**
+---
 
-GOREBLADE: Unholy Survivors is an action roguelite auto-shooter where you control a survivor facing endless waves of horror creatures. Your weapons fire automatically - you just need to survive!
+## About
 
-## 🕹️ How to Play
+GOREBLADE: Unholy Survivors is an action roguelite auto-shooter where you control a survivor facing endless waves of horror creatures. Your weapons fire automatically - you just need to survive, collect souls, and become powerful enough to defeat the bosses!
 
-- **WASD** or **Arrow Keys** - Move your character
-- **Weapons fire automatically** - Focus on dodging!
-- **Collect purple gems** - Gain XP from fallen enemies
-- **Survive waves** - Pick upgrades between waves
-- **Defeat bosses** - Every 5 waves brings a boss fight
-- **Win condition** - Survive 15 waves and defeat the final boss
+### Features
+- **6 Playable Characters** with unique starting weapons and exclusive bosses
+- **16 Unique Weapons** with different attack patterns
+- **15 Enemy Types** - New enemy unlocks each wave!
+- **24 Bosses** (4 unique bosses per character)
+- **Retro Atari-style pixel graphics**
+- **Procedural retro sound effects**
+- **🎵 Music soundtrack** during gameplay
+- **Xbox Controller Support**
+- **Vampire Survivors-style progression** - level up by collecting souls!
+
+---
+
+## Controls
+
+### Keyboard
+| Key               | Action         |
+|-------------------|----------------|
+| WASD / Arrow Keys | Move           |
+| M                 | Toggle Mute    |
+| Enter             | Select / Start |
+| Escape            | Back           |
+
+### Xbox Controller
+| Button             | Action     |
+|--------------------|------------|
+| Left Stick / D-Pad | Move       |
+| A                  | Select     |
+| B                  | Back       |
+| Start              | Start Game |
+
+---
+
+## Characters
+
+Each character has unique stats, a starting weapon, and **4 exclusive bosses** only they can fight!
+
+### Derek the Death Dealer
+```
+   ████
+  ██░░██   "I used to be an accountant.
+  █░██░█    Now I account for bodies."
+   ████
+   █  █    Starting Weapon: 🩸 Blood Shooter
+```
+**Stats:** Balanced • Easy to Play
+
+---
+
+### Granny Graves
+```
+   ▓▓▓▓
+  ▓▓░░▓▓   "Back in my day, we killed
+  ▓░██░▓    demons UPHILL both ways!"
+   ▓▓▓▓
+   ▓  ▓    Starting Weapon: ⚔ Reaper Scythe
+```
+**Stats:** 0.8x Speed • 1.3x Damage • Hard Mode
+
+---
+
+### Edgy Eddie
+```
+   ████
+  ██░░██   "You wouldn't understand.
+  █░██░█    My soul is darker than my eyeliner."
+   ████
+   █  █    Starting Weapon: 💜 Soul Seeker
+```
+**Stats:** 1.3x Speed • 0.7x Health • Glass Cannon
+
+---
+
+### Chef Cleaver
+```
+   ████
+  ██░░██   "Tonight's special: YOU,
+  █░██░█    served with a side of PAIN!"
+   ████
+   █  █    Starting Weapon: 🥩 Meat Cannon
+```
+**Stats:** Explosive • Area Damage
+
+---
+
+### Disco Dave
+```
+   ████
+  ██░░██   "Stayin' alive? More like
+  █░██░█    SLAYIN' alive! Ah ah ah ah..."
+   ████
+   █  █    Starting Weapon: 🔥 Hellfire Nova
+```
+**Stats:** Flashy • Multi-hit
+
+---
+
+### Nerdy Nancy
+```
+   ████
+  ██░░██   "According to my calculations,
+  █░██░█    you have a 0% chance of survival."
+   ████
+   █  █    Starting Weapon: 👻 Ghost Chain
+```
+**Stats:** 1.2x XP Gain • Strategic
+
+---
 
 ## ⚔️ Weapons
 
-| Weapon | Description |
-|--------|-------------|
-| 🩸 Blood Shooter | Spits cursed blood forward |
-| 💀 Skull Spreader | Fires 3 skulls in a spread pattern |
-| ⚡ Death Laser | Piercing beam that goes through enemies |
-| 🔮 Cursed Orbit | Spinning blades orbit around you |
-| 🥩 Meat Cannon | Explosive meat chunks with splash damage |
-| 👻 Ghost Chain | Spectral chains that bounce between enemies |
+You can hold up to **4 weapons** simultaneously. Choose wisely!
 
-## 👹 Enemies
+| Icon | Weapon | Pattern | Description |
+|------|--------|---------|-------------|
+| 🩸 | Blood Shooter | Straight | Spits cursed blood forward |
+| 💀 | Skull Spreader | Spread | Fires 3 skulls in a spread |
+| ⚡ | Death Laser | Piercing | Beam that goes through enemies |
+| 🔮 | Cursed Orbit | Orbit | Spinning blades around you |
+| 🥩 | Meat Cannon | Explosive | Explosive meat chunks |
+| 👻 | Ghost Chain | Chain | Bounces between enemies |
+| 🔥 | Hellfire Nova | Nova | Flames in all directions |
+| 🦴 | Bone Boomerang | Boomerang | Returns to sender |
+| 🧪 | Toxic Puddle | Puddle | Acid pools on ground |
+| 💜 | Soul Seeker | Homing | Chases enemies |
+| 😱 | Scream Wave | Wave | Cone attack in front |
+| ☔ | Blood Rain | Rain | Droplets from above |
+| 👀 | Eyeball Turret | Turret | Floating eye helper |
+| ⚔ | Reaper Scythe | Spin | Spinning piercing scythe |
+| 🐍 | Poison Fang | Poison | Venomous damage over time |
 
-- **Rotting Randy** (Zombie) - Slow but sturdy
-- **Boney Tony** (Skeleton) - Fast and fragile
-- **Transparent Terry** (Ghost) - Can phase through attacks
-- **Demented Derek** (Demon) - Strong and aggressive
-- **Blobby Bobby** (Blob) - Splits into smaller blobs on death
-- **Bitey McBatface** (Bat) - Fast with erratic movement
-- **Wrathy Wendy** (Wraith) - Teleports around the arena
+---
+
+## Enemies
+
+**New enemy type unlocks each wave!** Each enemy has unique behaviors and abilities.
+
+| Wave | Enemy | Name | Special Ability |
+|------|-------|------|-----------------|
+| 1 | 🧟 | Rotting Randy (Zombie) | Basic enemy, slow but sturdy |
+| 2 | 💀 | Boney Tony (Skeleton) | Fast and fragile |
+| 3 | 🦇 | Bitey McBatface (Bat) | Erratic movement patterns |
+| 4 | 🟢 | Blobby Bobby (Blob) | **Splits into 2** on death! |
+| 5 | 👻 | Transparent Terry (Ghost) | **Phases through attacks** |
+| 6 | 😈 | Demented Derek (Demon) | Strong and aggressive |
+| 7 | 🌑 | Wrathy Wendy (Wraith) | **Teleports** near player |
+| 8 | 🕷️ | Creepy Craig (Crawler) | Multi-legged horror |
+| 9 | 💥 | Bloated Barry (Bloater) | **Explodes on death!** Damages nearby |
+| 10 | 🗿 | Gregory the Golem | Armored tank, high HP |
+| 11 | 🕸️ | Spindly Steve (Spider) | Fast swarm, comes in groups |
+| 12 | ⚔️ | Reginald the Revenant | **Resurrects once** at 50% HP! |
+| 13 | 🌀 | Void Victor (Void Walker) | **Pulls player** towards it |
+| 14 | 🪞 | Danny Doppelganger | **Creates clones** when hit |
+| 15 | 👁️ | Nightmare Ned (Nightmare Spawn) | Phases + Teleports, ultimate enemy |
+
+### Enemy Sprites
+```
+ZOMBIE          SKELETON        BAT             BLOB
+  ████            ████          ▄█  █▄         ██████
+ ██░░██          ██  ██          ████         ████████
+ █ ▀▀ █          █ ░░ █          █░░█         ██ ○○ ██
+  ████            ████            ██           ██████
+
+GHOST           DEMON           WRAITH          CRAWLER
+  ▒▒▒▒            ████           ▓▓▓▓          ▄▄████▄▄
+ ▒▒░░▒▒         ▲████▲          ▓░░▓▓         ╠══░░══╣
+ ▒ ██ ▒         █ ▀▀ █          ▓ ▓▓          ╚══════╝
+  ~~~~            ████           ~~~~
+
+BLOATER         GOLEM           SPIDER          REVENANT
+  ▓███▓          ████▓           ░██░           ▓████▓
+ ▓█░░█▓         ▓████▓          ▀████▀         ██░░██
+ ▓█XX█▓         █ oo █          ▄████▄         █▀▀▀▀█
+  ▓███▓          ████           ░████░          ▓▓▓▓
+
+VOID WALKER     DOPPELGANGER    NIGHTMARE SPAWN
+   ▓▓▓▓           ░██░             ╔══╗
+  ▓◉◉◉▓          ░░██░░           ═◉◉◉═
+  ▓▓▓▓▓          ░░░░░░           ═════
+   ~~~~           ~~~~             ╚══╝
+```
+
+---
 
 ## 👿 Bosses
 
-Every 5 waves, face a deadly boss:
-- Wave 5: **CAPTAIN CHUNKY GUTS**
-- Wave 10: **BARON VON STINKBUTT**
-- Wave 15: **NIGHTMARE KAREN** (Final Boss)
+Every 5 waves, face a boss! Each character has **4 unique bosses**.
 
-## 🎨 Features
+### Derek's Bosses (Default)
+```
+Wave 5:  CAPTAIN CHUNKY GUTS     Wave 10: BARON VON STINKBUTT
+         ████████████                    ████████████
+        ██░░░░░░░░░░██                  ██▲░░░░░░▲██
+        ██ ▀▀    ▀▀ ██                  ██ ══════ ██
+        ██  ██████  ██                  ████████████
+         ████████████                   ████ ▓▓ ████
 
-- **Retro Atari-style pixel graphics**
-- **Procedural sound effects** using Web Audio API
-- **Wave-based progression** with scaling difficulty
-- **Upgrade system** between waves
-- **Multiple weapon types** with unique behaviors
-- **Boss fights** with unique patterns
-- **Crude humor** throughout (you've been warned!)
-- **CRT scanline effects** for authentic retro feel
+Wave 15: GHOST KING               Final: NIGHTMARE KAREN
+         ╔══════════╗                   ████████████
+        ▒▒▒▒▒▒▒▒▒▒▒▒                   █░█░█░█░█░█░█
+        ▒▒ ██  ██ ▒▒                   ██▀▀▀▀▀▀▀▀██
+        ▒▒▒▒▒▒▒▒▒▒▒▒                   █ ◉◉◉◉◉◉◉◉ █
+          ~~~~~~~~                      ████████████
+```
 
-## 🚀 Hosting on GitHub Pages
+---
 
-1. Fork this repository
-2. Go to Settings → Pages
-3. Select "Deploy from a branch"
-4. Choose `main` branch and `/root` folder
-5. Your game will be live at `https://[username].github.io/[repo-name]`
+## Progression System
 
-## 🛠️ Technical Details
+### Vampire Survivors Style!
+1. **Kill enemies** → Collect purple soul gems
+2. **Fill the XP bar** → **LEVEL UP!** → Choose an upgrade
+3. **Waves continue** → Next wave auto-starts
+4. **Every 5 waves** → Boss fight!
+5. **Survive 15 waves** → Victory!
 
-- **Pure JavaScript** - No frameworks or build tools required
+### Upgrades Include:
+- **New Weapons** - Add to your arsenal (max 4)
+- **Weapon Upgrades** - Level up existing weapons (max level 5)
+- **Max Health** - More meat!
+- **Move Speed** - Run faster
+- **Pickup Range** - Lazy but effective
+- **Healing** - Mystery meat
+
+---
+
+## Technical Details
+
+- **Pure JavaScript** - No frameworks or build tools required - created to be played directly in your browser!
 - **Canvas 2D rendering** - Hardware accelerated graphics
 - **Web Audio API** - Procedural retro sound effects
+- **HTML5 Audio** - Music soundtrack support
+- **Gamepad API** - Xbox controller support
 - **Responsive design** - Works on various screen sizes
 - **No dependencies** - Just HTML, CSS, and JavaScript
 
-## 📁 Project Structure
+---
 
-```
-auto-shooter/
-├── index.html          # Main HTML file
-├── styles.css          # Retro horror CSS
-├── js/
-│   ├── utils.js        # Utility functions
-│   ├── audio.js        # Sound effects system
-│   ├── weapons.js      # Weapon definitions & projectiles
-│   ├── enemies.js      # Enemy types & wave management
-│   ├── player.js       # Player class
-│   ├── particles.js    # Particle effects
-│   ├── upgrades.js     # Upgrade system
-│   ├── game.js         # Main game engine
-│   └── main.js         # Entry point & UI
-└── README.md           # This file
-```
+## Tips & Tricks
 
-## 🎯 Tips
+1. **Keep moving** - Standing still is death!
+2. **Prioritize new weapons early** - Build your arsenal
+3. **Cursed Orbit** is great for crowd control
+4. **Soul Seeker** for guaranteed hits
+5. **Hellfire Nova** clears rooms fast
+6. Save **healing upgrades** for when you need them
+7. **Farm regular enemies** before boss waves for extra XP
 
-1. Keep moving - standing still is death!
-2. Prioritize new weapons early, upgrades later
-3. The Cursed Orbit is great for crowd control
-4. Save healing upgrades for when you need them
-5. Boss waves give more XP - try to farm regular enemies first
+---
 
-## 📜 License
+## Easter Eggs
 
-MIT License - Feel free to modify and share!
+- Every death has a unique snarky quip
+- Boss names are intentionally ridiculous
+- Check out the console for a special message!
+
+---
+
+
+## Credits
+
+Inspired by:
+- **Vampire Survivors** - The original auto-shooter roguelite
+- **Atari 2600** - Retro aesthetic inspiration
+- **Classic horror** - Theme and atmosphere
 
 ---
 
 *© 2025 HELL INDUSTRIES - "We Put The Fun In Funeral"*
-

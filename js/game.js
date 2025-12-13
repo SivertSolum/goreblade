@@ -135,6 +135,9 @@ class Game {
     showUpgradeScreen() {
         this.state = 'upgrading';
         
+        // Lower music volume during upgrade selection
+        Audio.setMusicVolume(0.15);
+        
         const upgradeScreen = document.getElementById('upgrade-screen');
         const choicesContainer = document.getElementById('upgrade-choices');
         
@@ -172,6 +175,9 @@ class Game {
         // Hide upgrade screen
         document.getElementById('upgrade-screen').classList.add('hidden');
         document.getElementById('game-screen').classList.remove('hidden');
+        
+        // Restore music volume
+        Audio.setMusicVolume(0.4);
         
         // Resume playing
         this.state = 'playing';
@@ -261,8 +267,28 @@ class Game {
         }
         
         // Update enemies
+        let totalPullX = 0, totalPullY = 0;
+        const clonesToSpawn = [];
+        
         for (const enemy of this.enemies) {
             enemy.update(deltaTime, this.player.x, this.player.y, this.width, this.height);
+            
+            // Void walker pull effect
+            if (enemy.pullsPlayer && !enemy.isDying) {
+                const pull = enemy.getPullEffect(this.player.x, this.player.y);
+                totalPullX += pull.x;
+                totalPullY += pull.y;
+            }
+            
+            // Doppelganger clone spawning
+            if (enemy.shouldSpawnClone) {
+                enemy.shouldSpawnClone = false;
+                clonesToSpawn.push({
+                    x: enemy.x + Utils.random(-30, 30),
+                    y: enemy.y + Utils.random(-30, 30),
+                    type: enemy.data.id.toUpperCase()
+                });
+            }
             
             // Check collision with player
             if (!enemy.isDying && !enemy.isPhased) {
@@ -278,6 +304,25 @@ class Game {
                     }
                 }
             }
+        }
+        
+        // Apply pull effect to player
+        if (totalPullX !== 0 || totalPullY !== 0) {
+            this.player.x += totalPullX;
+            this.player.y += totalPullY;
+            // Keep player in bounds
+            this.player.x = Utils.clamp(this.player.x, this.player.size, this.width - this.player.size);
+            this.player.y = Utils.clamp(this.player.y, this.player.size, this.height - this.player.size);
+        }
+        
+        // Spawn doppelganger clones
+        for (const clone of clonesToSpawn) {
+            const cloneEnemy = new Enemy(clone.x, clone.y, 'DOPPELGANGER', this.waveManager.getWaveMultiplier() * 0.6);
+            cloneEnemy.clonesOnHit = false; // Clones don't clone
+            cloneEnemy.maxClones = 0;
+            cloneEnemy.health = cloneEnemy.maxHealth * 0.5;
+            this.enemies.push(cloneEnemy);
+            this.waveManager.enemiesRemaining++;
         }
         
         // Update projectiles
@@ -554,9 +599,43 @@ class Game {
                 this.waveManager.enemiesRemaining++;
             }
         }
+        
+        // Handle bloater explosion
+        if (enemy.shouldExplode) {
+            Audio.playExplosion();
+            this.particles.explosion(enemy.x, enemy.y, enemy.color);
+            this.shakeScreen(15, 300);
+            
+            // Damage nearby enemies
+            for (const otherEnemy of this.enemies) {
+                if (otherEnemy === enemy || otherEnemy.isDying) continue;
+                const dist = Utils.distance(enemy.x, enemy.y, otherEnemy.x, otherEnemy.y);
+                if (dist < enemy.explosionRadius) {
+                    const killed = otherEnemy.takeDamage(enemy.explosionDamage);
+                    this.particles.bloodSplatter(otherEnemy.x, otherEnemy.y, 3);
+                    if (killed) {
+                        this.handleEnemyDeath(otherEnemy);
+                    }
+                }
+            }
+            
+            // Damage player if too close
+            const playerDist = Utils.distance(enemy.x, enemy.y, this.player.x, this.player.y);
+            if (playerDist < enemy.explosionRadius) {
+                const dead = this.player.takeDamage(enemy.explosionDamage);
+                this.particles.damageFlash(this.player.x, this.player.y);
+                if (dead) {
+                    this.gameOver();
+                }
+            }
+        }
     }
     
     shakeScreen(intensity, duration) {
+        // Check if screen shake is enabled in settings
+        if (typeof GameSettings !== 'undefined' && !GameSettings.screenShake) {
+            return; // Screen shake disabled
+        }
         this.shakeIntensity = intensity;
         this.screenShake = duration;
     }
@@ -756,6 +835,8 @@ class Game {
     gameOver() {
         this.state = 'gameover';
         
+        // Stop the music
+        Audio.stopMusic();
         Audio.playGameOver();
         
         // Update game over screen
@@ -775,6 +856,8 @@ class Game {
     victory() {
         this.state = 'victory';
         
+        // Stop the music
+        Audio.stopMusic();
         Audio.playVictory();
         
         // Update victory screen
@@ -790,6 +873,10 @@ class Game {
     start() {
         this.state = 'playing';
         this.lastTime = performance.now();
+        
+        // Start the music
+        Audio.playMusic('main');
+        
         this.gameLoop(this.lastTime);
     }
     
