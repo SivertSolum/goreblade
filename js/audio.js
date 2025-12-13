@@ -34,7 +34,8 @@ class AudioManager {
     }
     
     initMusic() {
-        this.music = new Audio();
+        // Use document.createElement to avoid conflict with our Audio class
+        this.music = document.createElement('audio');
         this.music.loop = true;
         this.music.volume = this.muted ? 0 : this.musicVolume;
         

@@ -823,5 +823,122 @@ class Weapon {
             orb.draw(ctx);
         }
     }
+    
+    // Turret system
+    initTurrets(player) {
+        this.turrets = [];
+        this.turretPlayer = player;
+        const count = this.data.turretCount + (this.data.levelBonuses.turretCount || 0) * (this.level - 1);
+        
+        for (let i = 0; i < count; i++) {
+            this.turrets.push({
+                angle: (Math.PI * 2 / count) * i,
+                distance: 60,
+                lastFired: 0,
+                x: 0,
+                y: 0
+            });
+        }
+    }
+    
+    updateTurrets(deltaTime, currentTime, enemies) {
+        if (!this.turrets || !this.turretPlayer) return [];
+        
+        const projectiles = [];
+        const player = this.turretPlayer;
+        
+        // Update turret count if level changed
+        const expectedCount = this.data.turretCount + (this.data.levelBonuses.turretCount || 0) * (this.level - 1);
+        while (this.turrets.length < expectedCount) {
+            this.turrets.push({
+                angle: (Math.PI * 2 / expectedCount) * this.turrets.length,
+                distance: 60,
+                lastFired: 0,
+                x: 0,
+                y: 0
+            });
+        }
+        
+        for (const turret of this.turrets) {
+            // Rotate around player
+            turret.angle += deltaTime * 0.001;
+            turret.x = player.x + Math.cos(turret.angle) * turret.distance;
+            turret.y = player.y + Math.sin(turret.angle) * turret.distance;
+            
+            // Find nearest enemy in range
+            let nearestEnemy = null;
+            let nearestDist = this.data.turretRange || 200;
+            
+            for (const enemy of enemies) {
+                if (enemy.isDying) continue;
+                const dist = Math.sqrt(
+                    Math.pow(turret.x - enemy.x, 2) + 
+                    Math.pow(turret.y - enemy.y, 2)
+                );
+                if (dist < nearestDist) {
+                    nearestDist = dist;
+                    nearestEnemy = enemy;
+                }
+            }
+            
+            // Fire at enemy
+            if (nearestEnemy && currentTime - turret.lastFired >= this.fireRate) {
+                turret.lastFired = currentTime;
+                const angle = Math.atan2(
+                    nearestEnemy.y - turret.y,
+                    nearestEnemy.x - turret.x
+                );
+                projectiles.push(new Projectile(turret.x, turret.y, angle, this.data, this.level));
+                Audio.playShoot('basic');
+            }
+        }
+        
+        return projectiles;
+    }
+    
+    drawTurrets(ctx) {
+        if (!this.turrets) return;
+        
+        for (const turret of this.turrets) {
+            ctx.save();
+            
+            // Draw floating eyeball
+            const size = 12;
+            
+            // Eye white
+            ctx.fillStyle = '#FFFFFF';
+            ctx.beginPath();
+            ctx.arc(turret.x, turret.y, size, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Eye outline
+            ctx.strokeStyle = '#FF0000';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Pupil (looks at nearest target direction or forward)
+            ctx.fillStyle = '#FF0000';
+            ctx.beginPath();
+            ctx.arc(turret.x + 3, turret.y, size * 0.4, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Inner pupil
+            ctx.fillStyle = '#000000';
+            ctx.beginPath();
+            ctx.arc(turret.x + 4, turret.y, size * 0.2, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Glow effect
+            ctx.shadowColor = '#FF0000';
+            ctx.shadowBlur = 10;
+            ctx.strokeStyle = '#FF6666';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.arc(turret.x, turret.y, size + 2, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            ctx.restore();
+        }
+    }
 }
 

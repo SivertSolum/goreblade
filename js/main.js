@@ -220,21 +220,50 @@ function navigateMenu(direction) {
 
 // Select current menu item
 function selectMenuItem() {
+    console.log('selectMenuItem called, currentScreen:', currentScreen);
+    
     if (currentScreen === 'title') {
         const buttons = titleScreen.querySelectorAll('.menu-btn');
+        console.log('Title buttons:', buttons.length, 'menuIndex:', menuIndex);
         if (buttons[menuIndex]) {
             buttons[menuIndex].click();
         }
     } else if (currentScreen === 'character') {
         const cards = document.querySelectorAll('.character-card');
-        if (cards[characterIndex]) {
-            cards[characterIndex].click();
+        console.log('Character cards:', cards.length, 'characterIndex:', characterIndex);
+        if (cards.length > 0 && cards[characterIndex]) {
+            // Directly call the character selection logic
+            const card = cards[characterIndex];
+            const characterKey = card.dataset.characterId;
+            console.log('Selecting character via keyboard:', characterKey);
+            
+            // Remove selection from all cards
+            cards.forEach(c => {
+                c.classList.remove('selected');
+                c.classList.remove('keyboard-selected');
+            });
+            card.classList.add('selected');
+            
+            // Select character and start game
+            if (characterKey && typeof selectCharacter === 'function') {
+                selectCharacter(characterKey);
+                startGame();
+            } else {
+                console.error('selectCharacter function not found or characterKey is empty');
+            }
+        } else {
+            console.log('No character cards found or invalid index');
         }
     } else if (currentScreen === 'settings') {
         // Handle settings selection
         handleSettingsSelect();
     } else if (currentScreen === 'howto') {
         showScreen(titleScreen);
+    } else if (currentScreen === 'gameover') {
+        startGame();
+    } else if (currentScreen === 'victory') {
+        buildCharacterSelect();
+        showScreen(characterScreen);
     }
 }
 
@@ -300,7 +329,7 @@ function buildCharacterSelect() {
         
         card.innerHTML = `
             <div class="character-avatar" id="avatar-${key}">
-                <canvas width="60" height="80"></canvas>
+                <canvas width="120" height="160"></canvas>
             </div>
             <div class="character-name">${char.name}</div>
             <div class="character-tagline">${char.tagline}</div>
@@ -308,15 +337,25 @@ function buildCharacterSelect() {
             <div class="character-weapon">Starts with: <span>${weapon.icon} ${weapon.name}</span></div>
         `;
         
-        card.addEventListener('click', () => {
+        // Click handler for this card
+        card.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const clickedKey = this.dataset.characterId;
+            console.log('Character card clicked:', clickedKey);
+            
             // Remove selection from all cards
-            document.querySelectorAll('.character-card').forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
+            document.querySelectorAll('.character-card').forEach(c => {
+                c.classList.remove('selected');
+                c.classList.remove('keyboard-selected');
+            });
+            this.classList.add('selected');
             
             // Select character and start game
-            selectCharacter(key);
+            selectCharacter(clickedKey);
             startGame();
-        });
+        };
         
         grid.appendChild(card);
         
@@ -325,14 +364,22 @@ function buildCharacterSelect() {
     }
 }
 
-// Draw a mini character avatar on canvas
+// Draw a character avatar on canvas (larger size)
 function drawCharacterAvatar(canvas, char) {
     const ctx = canvas.getContext('2d');
-    const cx = 30;
-    const cy = 45;
-    const s = 12;
+    const cx = 60;  // Center x (half of 120)
+    const cy = 90;  // Center y (half of 160, adjusted)
+    const s = 28;   // Size multiplier (increased from 12)
     
     ctx.imageSmoothingEnabled = false;
+    
+    // White outline/glow effect
+    ctx.fillStyle = '#FFFFFF';
+    ctx.shadowColor = '#FFFFFF';
+    ctx.shadowBlur = 8;
+    ctx.fillRect(cx - s/2 - 3, cy - s/4 - 3, s + 6, s + 6);
+    ctx.fillRect(cx - s/2.5 - 3, cy - s/2 - s/3 - 3, s/1.2 + 6, s/1.2 + 6);
+    ctx.shadowBlur = 0;
     
     // Body
     ctx.fillStyle = char.clothColor;
@@ -351,10 +398,20 @@ function drawCharacterAvatar(canvas, char) {
     ctx.fillRect(cx - s/4, cy - s/2, s/5, s/5);
     ctx.fillRect(cx + s/12, cy - s/2, s/5, s/5);
     
+    // Eye pupils
+    ctx.fillStyle = '#000';
+    ctx.fillRect(cx - s/5, cy - s/2 + s/20, s/10, s/10);
+    ctx.fillRect(cx + s/7, cy - s/2 + s/20, s/10, s/10);
+    
     // Legs
     ctx.fillStyle = char.clothColor;
     ctx.fillRect(cx - s/3, cy + s/2, s/4, s/3);
     ctx.fillRect(cx + s/12, cy + s/2, s/4, s/3);
+    
+    // Arms
+    ctx.fillStyle = char.bodyColor;
+    ctx.fillRect(cx - s/2 - s/6, cy - s/6, s/4, s/2);
+    ctx.fillRect(cx + s/2 - s/12, cy - s/6, s/4, s/2);
 }
 
 // Start new game

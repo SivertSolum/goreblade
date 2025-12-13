@@ -77,6 +77,9 @@ class Player {
             if (weapon.data.pattern === 'orbit') {
                 weapon.initOrbitProjectiles(this);
             }
+            if (weapon.data.pattern === 'turret') {
+                weapon.initTurrets(this);
+            }
             this.weapons.push(weapon);
             return true;
         }
@@ -194,6 +197,18 @@ class Player {
         }
     }
     
+    // Update turrets and return any projectiles they fire
+    updateTurrets(deltaTime, currentTime, enemies) {
+        const projectiles = [];
+        for (const weapon of this.weapons) {
+            if (weapon.data.pattern === 'turret') {
+                const turretProjectiles = weapon.updateTurrets(deltaTime, currentTime, enemies);
+                projectiles.push(...turretProjectiles);
+            }
+        }
+        return projectiles;
+    }
+    
     fireWeapons(currentTime, enemies) {
         const projectiles = [];
         
@@ -302,6 +317,13 @@ class Player {
         for (const weapon of this.weapons) {
             if (weapon.data.pattern === 'orbit') {
                 weapon.drawOrbit(ctx);
+            }
+        }
+        
+        // Draw turrets
+        for (const weapon of this.weapons) {
+            if (weapon.data.pattern === 'turret') {
+                weapon.drawTurrets(ctx);
             }
         }
     }

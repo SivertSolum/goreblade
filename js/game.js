@@ -248,6 +248,10 @@ class Game {
         const newProjectiles = this.player.fireWeapons(this.gameTime, this.enemies);
         this.projectiles.push(...newProjectiles);
         
+        // Update turrets (they fire independently)
+        const turretProjectiles = this.player.updateTurrets(deltaTime, this.gameTime, this.enemies);
+        this.projectiles.push(...turretProjectiles);
+        
         // Spawn enemies
         if (this.waveManager.waveInProgress && this.waveManager.enemiesToSpawn > 0) {
             this.waveManager.spawnTimer += deltaTime;
@@ -660,54 +664,67 @@ class Game {
         document.getElementById('kill-count').textContent = 
             `KILLS: ${this.waveManager.totalKills}`;
         
-        // Weapon display - only update if weapons changed
+        // Weapon display - always update to ensure all weapons shown
         const weaponDisplay = document.getElementById('weapon-display');
-        const currentWeaponCount = weaponDisplay.children.length;
-        const needsUpdate = currentWeaponCount !== this.player.weapons.length ||
-            Array.from(weaponDisplay.children).some((icon, i) => {
-                const weapon = this.player.weapons[i];
-                return !weapon || !weapon.data || icon.dataset.level !== String(weapon.level);
-            });
+        const tooltip = document.getElementById('weapon-tooltip');
         
-        if (needsUpdate) {
+        // Check if update needed
+        const weaponCount = this.player.weapons.length;
+        const displayCount = weaponDisplay.children.length;
+        
+        if (weaponCount !== displayCount) {
             weaponDisplay.innerHTML = '';
-            const tooltip = document.getElementById('weapon-tooltip');
             
-            for (const weapon of this.player.weapons) {
-                if (!weapon || !weapon.data) continue; // Skip invalid weapons
+            for (let i = 0; i < this.player.weapons.length; i++) {
+                const weapon = this.player.weapons[i];
+                if (!weapon || !weapon.data) continue;
                 
                 const icon = document.createElement('div');
                 icon.className = 'weapon-icon';
                 icon.textContent = weapon.data.icon || '?';
-                icon.dataset.level = weapon.level;
-                icon.dataset.weaponType = weapon.type;
-                icon.style.cursor = 'pointer';
-                icon.style.pointerEvents = 'auto';
+                icon.dataset.level = String(weapon.level);
+                icon.dataset.weaponType = weapon.type || '';
+                icon.dataset.index = String(i);
                 
-                // Store weapon reference for tooltip
+                weaponDisplay.appendChild(icon);
+            }
+        }
+        
+        // Update tooltip handlers and levels (always)
+        for (let i = 0; i < weaponDisplay.children.length; i++) {
+            const icon = weaponDisplay.children[i];
+            const weapon = this.player.weapons[i];
+            if (!weapon || !weapon.data) continue;
+            
+            // Update level display if changed
+            if (icon.dataset.level !== String(weapon.level)) {
+                icon.dataset.level = String(weapon.level);
+            }
+            
+            // Ensure tooltip handlers are set
+            if (!icon.dataset.hasTooltip) {
+                icon.dataset.hasTooltip = 'true';
                 const weaponData = weapon.data;
-                const weaponLevel = weapon.level;
                 
-                // Tooltip events
-                icon.addEventListener('mouseenter', () => {
+                icon.onmouseenter = () => {
                     if (tooltip && weaponData) {
+                        const currentWeapon = this.player.weapons[parseInt(icon.dataset.index)];
+                        const level = currentWeapon ? currentWeapon.level : 1;
                         tooltip.querySelector('.tooltip-name').textContent = 
                             `${weaponData.icon || ''} ${weaponData.name || 'Unknown'}`;
                         tooltip.querySelector('.tooltip-level').textContent = 
-                            `Level ${weaponLevel} / ${weaponData.maxLevel || 5}`;
+                            `Level ${level} / ${weaponData.maxLevel || 5}`;
                         tooltip.querySelector('.tooltip-desc').textContent = 
                             weaponData.description || '';
                         tooltip.classList.remove('hidden');
                     }
-                });
+                };
                 
-                icon.addEventListener('mouseleave', () => {
+                icon.onmouseleave = () => {
                     if (tooltip) {
                         tooltip.classList.add('hidden');
                     }
-                });
-                
-                weaponDisplay.appendChild(icon);
+                };
             }
         }
     }
