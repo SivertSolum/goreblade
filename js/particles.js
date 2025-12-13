@@ -190,7 +190,10 @@ class ParticleSystem {
     
     // Explosion effect
     explosion(x, y, radius = 60, color = '#FF4500') {
-        const count = Math.floor(radius / 2);
+        const multiplier = this.getParticleMultiplier();
+        if (multiplier === 0) return;
+        
+        const count = Math.ceil(Math.floor(radius / 2) * multiplier);
         
         for (let i = 0; i < count; i++) {
             const angle = Utils.random(0, Math.PI * 2);
