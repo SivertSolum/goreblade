@@ -58,38 +58,38 @@ GOREBLADE: Unholy Survivors is an action roguelite auto-shooter where you contro
 Each character has unique stats, a starting weapon, and **4 exclusive bosses** only they can fight!
 
 ### Derek the Death Dealer
-**Starting Weapon:** 🩸 Blood Shooter
-**Stats:** Balanced • Easy to Play
+- **Starting Weapon:** 🩸 Blood Shooter
+- **Stats:** Balanced • Easy to Play
 
 ---
 
 ### Granny Graves
-**Starting Weapon:** ⚔ Reaper Scythe
-**Stats:** 0.8x Speed • 1.3x Damage • Hard Mode
+- **Starting Weapon:** ⚔ Reaper Scythe
+- **Stats:** 0.8x Speed • 1.3x Damage • Hard Mode
 
 ---
 
 ### Edgy Eddie
-**Starting Weapon:** 💜 Soul Seeker
-**Stats:** 1.3x Speed • 0.7x Health • Glass Cannon
+- **Starting Weapon:** 💜 Soul Seeker
+- **Stats:** 1.3x Speed • 0.7x Health • Glass Cannon
 
 ---
 
 ### Chef Cleaver
-**Starting Weapon:** 🥩 Meat Cannon
-**Stats:** Explosive • Area Damage
+- **Starting Weapon:** 🥩 Meat Cannon
+- **Stats:** Explosive • Area Damage
 
 ---
 
 ### Disco Dave
-**Starting Weapon:** 🔥 Hellfire Nova
-**Stats:** Flashy • Multi-hit
+- **Starting Weapon:** 🔥 Hellfire Nova
+- **Stats:** Flashy • Multi-hit
 
 ---
 
 ### Nerdy Nancy
-Starting Weapon: 👻 Ghost Chain
-**Stats:** 1.2x XP Gain • Strategic
+- **Starting Weapon:** 👻 Ghost Chain
+- **Stats:** 1.2x XP Gain • Strategic
 
 ---
 
