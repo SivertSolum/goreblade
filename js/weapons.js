@@ -696,6 +696,28 @@ class Weapon {
         this.level = level;
         this.lastFired = 0;
         this.orbitProjectiles = [];
+        this.turrets = [];
+        
+        // Validate weapon data
+        if (!this.data) {
+            console.error(`Invalid weapon type: ${type}`);
+            // Create fallback data
+            this.data = {
+                id: type,
+                name: 'Unknown Weapon',
+                description: 'A mysterious weapon',
+                icon: '❓',
+                color: '#FFFFFF',
+                damage: 5,
+                fireRate: 500,
+                projectileSpeed: 5,
+                projectileSize: 4,
+                pattern: 'straight',
+                soundType: 'basic',
+                maxLevel: 5,
+                levelBonuses: { damage: 2, fireRate: -30 }
+            };
+        }
         
         // Calculate fire rate with level
         const bonusMultiplier = level - 1;

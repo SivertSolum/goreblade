@@ -449,7 +449,8 @@ function setupInputListeners() {
     });
     
     document.addEventListener('keyup', (e) => {
-        if (!game || game.state !== 'playing') return;
+        if (!game || !game.player) return;
+        // Always handle keyup to prevent stuck keys
         game.player.handleKeyUp(e.key);
     });
     

@@ -135,6 +135,14 @@ class Game {
     showUpgradeScreen() {
         this.state = 'upgrading';
         
+        // Reset player keys to prevent stuck movement
+        this.player.keys = {
+            up: false,
+            down: false,
+            left: false,
+            right: false
+        };
+        
         // Lower music volume during upgrade selection
         Audio.setMusicVolume(0.15);
         
@@ -668,47 +676,43 @@ class Game {
         const weaponDisplay = document.getElementById('weapon-display');
         const tooltip = document.getElementById('weapon-tooltip');
         
-        // Check if update needed
-        const weaponCount = this.player.weapons.length;
+        // Get valid weapons only
+        const validWeapons = this.player.weapons.filter(w => w && w.data);
         const displayCount = weaponDisplay.children.length;
         
-        if (weaponCount !== displayCount) {
+        // Check if we need to rebuild the display
+        let needsRebuild = validWeapons.length !== displayCount;
+        
+        // Also check if weapon types changed
+        if (!needsRebuild) {
+            for (let i = 0; i < validWeapons.length; i++) {
+                const icon = weaponDisplay.children[i];
+                if (!icon || icon.dataset.weaponType !== validWeapons[i].type) {
+                    needsRebuild = true;
+                    break;
+                }
+            }
+        }
+        
+        if (needsRebuild) {
             weaponDisplay.innerHTML = '';
             
-            for (let i = 0; i < this.player.weapons.length; i++) {
-                const weapon = this.player.weapons[i];
-                if (!weapon || !weapon.data) continue;
+            for (let i = 0; i < validWeapons.length; i++) {
+                const weapon = validWeapons[i];
                 
                 const icon = document.createElement('div');
                 icon.className = 'weapon-icon';
                 icon.textContent = weapon.data.icon || '?';
                 icon.dataset.level = String(weapon.level);
-                icon.dataset.weaponType = weapon.type || '';
+                icon.dataset.weaponType = weapon.type;
                 icon.dataset.index = String(i);
                 
-                weaponDisplay.appendChild(icon);
-            }
-        }
-        
-        // Update tooltip handlers and levels (always)
-        for (let i = 0; i < weaponDisplay.children.length; i++) {
-            const icon = weaponDisplay.children[i];
-            const weapon = this.player.weapons[i];
-            if (!weapon || !weapon.data) continue;
-            
-            // Update level display if changed
-            if (icon.dataset.level !== String(weapon.level)) {
-                icon.dataset.level = String(weapon.level);
-            }
-            
-            // Ensure tooltip handlers are set
-            if (!icon.dataset.hasTooltip) {
-                icon.dataset.hasTooltip = 'true';
+                // Add tooltip handlers immediately
                 const weaponData = weapon.data;
-                
                 icon.onmouseenter = () => {
                     if (tooltip && weaponData) {
-                        const currentWeapon = this.player.weapons[parseInt(icon.dataset.index)];
+                        const idx = parseInt(icon.dataset.index);
+                        const currentWeapon = validWeapons[idx] || this.player.weapons.find(w => w && w.type === icon.dataset.weaponType);
                         const level = currentWeapon ? currentWeapon.level : 1;
                         tooltip.querySelector('.tooltip-name').textContent = 
                             `${weaponData.icon || ''} ${weaponData.name || 'Unknown'}`;
@@ -725,6 +729,17 @@ class Game {
                         tooltip.classList.add('hidden');
                     }
                 };
+                
+                weaponDisplay.appendChild(icon);
+            }
+        } else {
+            // Just update levels if they changed
+            for (let i = 0; i < weaponDisplay.children.length; i++) {
+                const icon = weaponDisplay.children[i];
+                const weapon = validWeapons[i];
+                if (weapon && icon.dataset.level !== String(weapon.level)) {
+                    icon.dataset.level = String(weapon.level);
+                }
             }
         }
     }
