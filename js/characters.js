@@ -13,7 +13,19 @@ const CHARACTERS = {
         bodyColor: '#DDA0A0',
         clothColor: '#4A0000',
         hairColor: '#2F1F1F',
-        bosses: ['MEGA_ZOMBIE', 'DEMON_LORD', 'GHOST_KING', 'NIGHTMARE']
+        bosses: ['MEGA_ZOMBIE', 'DEMON_LORD', 'GHOST_KING', 'NIGHTMARE'],
+        levelTheme: {
+            name: 'Cursed Graveyard',
+            bgColor: '#0A0A0A',
+            bgGradient: ['#0A0A0A', '#1A0A0A'],
+            gridColor: '#1a1a1a',
+            gridStyle: 'normal',
+            particleColor: '#444',
+            particleType: 'ash',
+            accentColor: '#8B0000',
+            decorations: 'gravestones',
+            ambientGlow: '#330000'
+        }
     },
     
     GRANNY_GRAVES: {
@@ -27,7 +39,19 @@ const CHARACTERS = {
         hairColor: '#C0C0C0',
         speed: 0.8,
         damage: 1.3,
-        bosses: ['DENTURE_DRAGON', 'BINGO_BEAST', 'KNITTING_NIGHTMARE', 'GRANDPA_GHOUL']
+        bosses: ['DENTURE_DRAGON', 'BINGO_BEAST', 'KNITTING_NIGHTMARE', 'GRANDPA_GHOUL'],
+        levelTheme: {
+            name: 'Haunted Mansion',
+            bgColor: '#0D0811',
+            bgGradient: ['#0D0811', '#1A0A20'],
+            gridColor: '#1f1525',
+            gridStyle: 'wallpaper',
+            particleColor: '#9966CC',
+            particleType: 'dust',
+            accentColor: '#4B0082',
+            decorations: 'cobwebs',
+            ambientGlow: '#2A0040'
+        }
     },
     
     EDGY_EDDIE: {
@@ -41,7 +65,19 @@ const CHARACTERS = {
         hairColor: '#000000',
         speed: 1.3,
         health: 0.7,
-        bosses: ['EMO_EMPEROR', 'DARKNESS_DADDY', 'TEARS_TITAN', 'VOID_VINCENT']
+        bosses: ['EMO_EMPEROR', 'DARKNESS_DADDY', 'TEARS_TITAN', 'VOID_VINCENT'],
+        levelTheme: {
+            name: 'The Endless Void',
+            bgColor: '#000000',
+            bgGradient: ['#000000', '#050008'],
+            gridColor: '#0a0a0a',
+            gridStyle: 'none',
+            particleColor: '#8B008B',
+            particleType: 'void',
+            accentColor: '#FF00FF',
+            decorations: 'tears',
+            ambientGlow: '#1A001A'
+        }
     },
     
     CHEF_CLEAVER: {
@@ -53,7 +89,19 @@ const CHARACTERS = {
         bodyColor: '#DDB0A0',
         clothColor: '#FFFFFF',
         hairColor: '#8B4513',
-        bosses: ['GLUTTON_GOLEM', 'FOOD_FIGHT_FIEND', 'KITCHEN_KRAKEN', 'HANGRY_HORROR']
+        bosses: ['GLUTTON_GOLEM', 'FOOD_FIGHT_FIEND', 'KITCHEN_KRAKEN', 'HANGRY_HORROR'],
+        levelTheme: {
+            name: "Hell's Kitchen",
+            bgColor: '#0F0805',
+            bgGradient: ['#0F0805', '#1A0A05'],
+            gridColor: '#2a1a10',
+            gridStyle: 'checkered',
+            particleColor: '#FF4500',
+            particleType: 'flames',
+            accentColor: '#FF6600',
+            decorations: 'flames',
+            ambientGlow: '#331100'
+        }
     },
     
     DISCO_DAVE: {
@@ -65,7 +113,19 @@ const CHARACTERS = {
         bodyColor: '#DDA0D0',
         clothColor: '#FFD700',
         hairColor: '#8B4513',
-        bosses: ['BOOGIE_BEAST', 'FUNKY_PHANTOM', 'RHYTHM_REAPER', 'SATURDAY_NIGHTMARE']
+        bosses: ['BOOGIE_BEAST', 'FUNKY_PHANTOM', 'RHYTHM_REAPER', 'SATURDAY_NIGHTMARE'],
+        levelTheme: {
+            name: 'Disco Inferno',
+            bgColor: '#050510',
+            bgGradient: ['#050510', '#0A0515'],
+            gridColor: '#15152a',
+            gridStyle: 'disco',
+            particleColor: '#FFD700',
+            particleType: 'sparkles',
+            accentColor: '#FF1493',
+            decorations: 'discoball',
+            ambientGlow: '#200030'
+        }
     },
     
     NERDY_NANCY: {
@@ -78,7 +138,19 @@ const CHARACTERS = {
         clothColor: '#4169E1',
         hairColor: '#8B0000',
         xpBonus: 1.2,
-        bosses: ['ALGORITHM_ABOMINATION', 'BINARY_BEHEMOTH', 'STACK_OVERFLOW_SPECTER', 'FINAL_BOSS_404']
+        bosses: ['ALGORITHM_ABOMINATION', 'BINARY_BEHEMOTH', 'STACK_OVERFLOW_SPECTER', 'FINAL_BOSS_404'],
+        levelTheme: {
+            name: 'The Digital Realm',
+            bgColor: '#000A00',
+            bgGradient: ['#000A00', '#001000'],
+            gridColor: '#003300',
+            gridStyle: 'circuit',
+            particleColor: '#00FF00',
+            particleType: 'code',
+            accentColor: '#00FF00',
+            decorations: 'binary',
+            ambientGlow: '#002200'
+        }
     }
 };
 

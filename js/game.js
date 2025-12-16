@@ -78,14 +78,266 @@ class Game {
     
     initBackgroundParticles() {
         this.bgParticles = [];
-        for (let i = 0; i < 50; i++) {
-            this.bgParticles.push({
+        const character = getSelectedCharacter();
+        const theme = character?.levelTheme || {};
+        const particleType = theme.particleType || 'ash';
+        const particleCount = particleType === 'code' ? 30 : 50;
+        
+        for (let i = 0; i < particleCount; i++) {
+            const particle = {
                 x: Utils.random(0, this.width || 1280),
                 y: Utils.random(0, this.height || 720),
                 size: Utils.random(1, 3),
                 speed: Utils.random(0.2, 0.5),
-                opacity: Utils.random(0.1, 0.3)
-            });
+                opacity: Utils.random(0.1, 0.4)
+            };
+            
+            // Customize based on particle type
+            switch (particleType) {
+                case 'void':
+                    particle.size = Utils.random(1, 4);
+                    particle.speed = Utils.random(0.1, 0.3);
+                    particle.driftX = Utils.random(-0.3, 0.3);
+                    particle.pulse = Utils.random(0, Math.PI * 2);
+                    break;
+                case 'flames':
+                    particle.size = Utils.random(2, 5);
+                    particle.speed = Utils.random(0.5, 1.2);
+                    particle.flicker = Utils.random(0.5, 1);
+                    particle.driftX = Utils.random(-0.5, 0.5);
+                    break;
+                case 'sparkles':
+                    particle.size = Utils.random(1, 3);
+                    particle.speed = Utils.random(0.3, 0.8);
+                    particle.hue = Utils.random(0, 360);
+                    particle.twinkle = Utils.random(0, Math.PI * 2);
+                    break;
+                case 'code':
+                    particle.char = String.fromCharCode(Utils.randomInt(33, 126));
+                    particle.size = Utils.randomInt(8, 14);
+                    particle.speed = Utils.random(1, 3);
+                    particle.opacity = Utils.random(0.3, 0.8);
+                    break;
+                case 'dust':
+                    particle.size = Utils.random(1, 2);
+                    particle.speed = Utils.random(0.1, 0.3);
+                    particle.driftX = Utils.random(-0.2, 0.2);
+                    break;
+            }
+            
+            this.bgParticles.push(particle);
+        }
+        
+        // Initialize decorations
+        this.decorations = [];
+        this.initDecorations(theme);
+    }
+    
+    initDecorations(theme) {
+        this.decorations = [];
+        const decorationType = theme.decorations || 'none';
+        const w = this.width || 1280;
+        const h = this.height || 720;
+        
+        switch (decorationType) {
+            case 'gravestones':
+                // Scattered gravestones around the edges (avoid center play area)
+                for (let i = 0; i < 12; i++) {
+                    // Place near edges
+                    let x, y;
+                    if (Math.random() > 0.5) {
+                        x = Math.random() > 0.5 ? Utils.random(30, 120) : Utils.random(w - 120, w - 30);
+                        y = Utils.random(50, h - 50);
+                    } else {
+                        x = Utils.random(50, w - 50);
+                        y = Math.random() > 0.5 ? Utils.random(30, 100) : Utils.random(h - 100, h - 30);
+                    }
+                    this.decorations.push({
+                        type: 'gravestone',
+                        x: x, y: y,
+                        variant: Utils.randomInt(0, 3),
+                        size: Utils.random(0.7, 1.1)
+                    });
+                }
+                // Add some skulls scattered around
+                for (let i = 0; i < 6; i++) {
+                    this.decorations.push({
+                        type: 'skull',
+                        x: Utils.random(50, w - 50),
+                        y: Utils.random(50, h - 50),
+                        rotation: Utils.random(-0.3, 0.3)
+                    });
+                }
+                // Dead trees at edges
+                for (let i = 0; i < 4; i++) {
+                    this.decorations.push({
+                        type: 'deadtree',
+                        x: Math.random() > 0.5 ? Utils.random(20, 80) : Utils.random(w - 80, w - 20),
+                        y: Utils.random(80, h - 80)
+                    });
+                }
+                break;
+                
+            case 'cobwebs':
+                // Cobwebs in corners
+                this.decorations.push({ type: 'cobweb', corner: 'tl' });
+                this.decorations.push({ type: 'cobweb', corner: 'tr' });
+                this.decorations.push({ type: 'cobweb', corner: 'bl' });
+                this.decorations.push({ type: 'cobweb', corner: 'br' });
+                // Old portraits on walls
+                for (let i = 0; i < 4; i++) {
+                    this.decorations.push({
+                        type: 'portrait',
+                        x: Utils.random(100, w - 100),
+                        y: Utils.random(40, 100),
+                        variant: Utils.randomInt(0, 2)
+                    });
+                }
+                // Candelabras
+                for (let i = 0; i < 5; i++) {
+                    this.decorations.push({
+                        type: 'candelabra',
+                        x: Utils.random(60, w - 60),
+                        y: Utils.random(60, h - 60),
+                        flicker: Utils.random(0, Math.PI * 2)
+                    });
+                }
+                // Rocking chairs
+                for (let i = 0; i < 3; i++) {
+                    this.decorations.push({
+                        type: 'rockingchair',
+                        x: Math.random() > 0.5 ? Utils.random(30, 100) : Utils.random(w - 100, w - 30),
+                        y: Utils.random(200, h - 100),
+                        phase: Utils.random(0, Math.PI * 2)
+                    });
+                }
+                break;
+                
+            case 'tears':
+                // Floating tear drops
+                for (let i = 0; i < 8; i++) {
+                    this.decorations.push({
+                        type: 'tear',
+                        x: Utils.random(80, w - 80),
+                        y: Utils.random(80, h - 80),
+                        phase: Utils.random(0, Math.PI * 2)
+                    });
+                }
+                // Broken hearts
+                for (let i = 0; i < 5; i++) {
+                    this.decorations.push({
+                        type: 'brokenheart',
+                        x: Utils.random(60, w - 60),
+                        y: Utils.random(60, h - 60),
+                        phase: Utils.random(0, Math.PI * 2)
+                    });
+                }
+                // Sad poetry fragments
+                for (let i = 0; i < 4; i++) {
+                    this.decorations.push({
+                        type: 'poem',
+                        x: Utils.random(50, w - 150),
+                        y: Utils.random(50, h - 50)
+                    });
+                }
+                break;
+                
+            case 'flames':
+                // Kitchen-themed decorations instead of floor flames
+                // Pots and pans scattered around edges
+                for (let i = 0; i < 6; i++) {
+                    this.decorations.push({
+                        type: 'kitchenitem',
+                        x: Math.random() > 0.5 ? Utils.random(30, 100) : Utils.random(w - 100, w - 30),
+                        y: Utils.random(100, h - 50),
+                        variant: Utils.randomInt(0, 3)
+                    });
+                }
+                // Meat hooks
+                for (let i = 0; i < 4; i++) {
+                    this.decorations.push({
+                        type: 'meathook',
+                        x: Utils.random(100, w - 100),
+                        y: Utils.random(30, 80)
+                    });
+                }
+                // Cutting boards with... stuff
+                for (let i = 0; i < 3; i++) {
+                    this.decorations.push({
+                        type: 'cuttingboard',
+                        x: Utils.random(80, w - 80),
+                        y: Utils.random(100, h - 100)
+                    });
+                }
+                break;
+                
+            case 'discoball':
+                // Central disco ball
+                this.decorations.push({
+                    type: 'discoball',
+                    x: w / 2,
+                    y: 60,
+                    rotation: 0
+                });
+                // Speakers at corners
+                this.decorations.push({ type: 'speaker', x: 40, y: h - 60 });
+                this.decorations.push({ type: 'speaker', x: w - 40, y: h - 60 });
+                // Dance floor spotlights
+                for (let i = 0; i < 4; i++) {
+                    this.decorations.push({
+                        type: 'spotlight',
+                        x: Utils.random(100, w - 100),
+                        y: Utils.random(100, h - 100),
+                        hue: Utils.random(0, 360),
+                        phase: Utils.random(0, Math.PI * 2)
+                    });
+                }
+                // Music notes floating
+                for (let i = 0; i < 6; i++) {
+                    this.decorations.push({
+                        type: 'musicnote',
+                        x: Utils.random(50, w - 50),
+                        y: Utils.random(100, h - 50),
+                        phase: Utils.random(0, Math.PI * 2)
+                    });
+                }
+                break;
+                
+            case 'binary':
+                // Binary code columns
+                for (let i = 0; i < 6; i++) {
+                    this.decorations.push({
+                        type: 'binarycolumn',
+                        x: Utils.random(30, w - 30),
+                        offset: Utils.random(0, 100)
+                    });
+                }
+                // Computer terminals
+                for (let i = 0; i < 4; i++) {
+                    this.decorations.push({
+                        type: 'terminal',
+                        x: Math.random() > 0.5 ? Utils.random(30, 100) : Utils.random(w - 100, w - 30),
+                        y: Utils.random(100, h - 100)
+                    });
+                }
+                // Circuit nodes
+                for (let i = 0; i < 8; i++) {
+                    this.decorations.push({
+                        type: 'circuitnode',
+                        x: Utils.random(50, w - 50),
+                        y: Utils.random(50, h - 50),
+                        pulse: Utils.random(0, Math.PI * 2)
+                    });
+                }
+                // Error popups
+                for (let i = 0; i < 3; i++) {
+                    this.decorations.push({
+                        type: 'errorpopup',
+                        x: Utils.random(80, w - 150),
+                        y: Utils.random(80, h - 80)
+                    });
+                }
+                break;
         }
     }
     
@@ -112,6 +364,9 @@ class Game {
         this.bossSpawned = false;
         this.bossWarningShown = false;
         this.pendingNextWave = 0;
+        
+        // Re-initialize background for character theme
+        this.initBackgroundParticles();
         
         // Initialize weapon display with 4 fixed slots
         const weaponDisplay = document.getElementById('weapon-display');
@@ -535,12 +790,60 @@ class Game {
         // Update particles
         this.particles.update(deltaTime);
         
-        // Update background particles
+        // Update background particles based on theme
+        const character = getSelectedCharacter();
+        const particleType = character?.levelTheme?.particleType || 'ash';
+        
         for (const p of this.bgParticles) {
-            p.y += p.speed;
-            if (p.y > this.height) {
-                p.y = 0;
-                p.x = Utils.random(0, this.width);
+            switch (particleType) {
+                case 'void':
+                    // Slow drift with pulsing
+                    p.y += p.speed * 0.5;
+                    p.x += p.driftX || 0;
+                    p.pulse = (p.pulse || 0) + deltaTime;
+                    if (p.y > this.height) { p.y = 0; p.x = Utils.random(0, this.width); }
+                    if (p.x < 0) p.x = this.width;
+                    if (p.x > this.width) p.x = 0;
+                    break;
+                    
+                case 'flames':
+                    // Rise upward with flickering
+                    p.y -= p.speed;
+                    p.x += (p.driftX || 0) * Math.sin(this.gameTime * 5 + p.x);
+                    if (p.y < 0) { 
+                        p.y = this.height; 
+                        p.x = Utils.random(0, this.width);
+                    }
+                    break;
+                    
+                case 'sparkles':
+                    // Very slow drift with gentle twinkling
+                    p.y += p.speed * 0.15;
+                    p.twinkle = (p.twinkle || 0) + deltaTime * 0.8; // Much slower twinkle
+                    p.hue = (p.hue + deltaTime * 5) % 360; // Much slower color shift
+                    if (p.y > this.height) { p.y = 0; p.x = Utils.random(0, this.width); }
+                    break;
+                    
+                case 'code':
+                    // Fast falling code characters
+                    p.y += p.speed * 2;
+                    if (p.y > this.height) { 
+                        p.y = 0; 
+                        p.x = Utils.random(0, this.width);
+                        p.char = String.fromCharCode(Utils.randomInt(33, 126));
+                    }
+                    break;
+                    
+                case 'dust':
+                    // Gentle floating
+                    p.y += p.speed;
+                    p.x += (p.driftX || 0) * Math.sin(this.gameTime + p.y * 0.01);
+                    if (p.y > this.height) { p.y = 0; p.x = Utils.random(0, this.width); }
+                    break;
+                    
+                default: // 'ash'
+                    p.y += p.speed;
+                    if (p.y > this.height) { p.y = 0; p.x = Utils.random(0, this.width); }
             }
         }
         
@@ -781,6 +1084,8 @@ class Game {
     
     draw() {
         const ctx = this.ctx;
+        const character = getSelectedCharacter();
+        const theme = character?.levelTheme || {};
         
         // Apply screen shake
         ctx.save();
@@ -790,34 +1095,17 @@ class Game {
             ctx.translate(shakeX, shakeY);
         }
         
-        // Clear canvas with dark background
-        ctx.fillStyle = '#0A0A0A';
-        ctx.fillRect(0, 0, this.width, this.height);
+        // Draw themed background
+        this.drawThemedBackground(ctx, theme);
         
-        // Draw background particles (floating dust/ash)
-        ctx.fillStyle = '#333';
-        for (const p of this.bgParticles) {
-            ctx.globalAlpha = p.opacity;
-            ctx.fillRect(p.x, p.y, p.size, p.size);
-        }
-        ctx.globalAlpha = 1;
+        // Draw themed particles
+        this.drawThemedParticles(ctx, theme);
         
-        // Draw grid pattern (subtle)
-        ctx.strokeStyle = '#1a1a1a';
-        ctx.lineWidth = 1;
-        const gridSize = 50;
-        for (let x = 0; x < this.width; x += gridSize) {
-            ctx.beginPath();
-            ctx.moveTo(x, 0);
-            ctx.lineTo(x, this.height);
-            ctx.stroke();
-        }
-        for (let y = 0; y < this.height; y += gridSize) {
-            ctx.beginPath();
-            ctx.moveTo(0, y);
-            ctx.lineTo(this.width, y);
-            ctx.stroke();
-        }
+        // Draw grid pattern based on theme
+        this.drawThemedGrid(ctx, theme);
+        
+        // Draw decorations (behind entities)
+        this.drawDecorations(ctx, theme);
         
         // Draw XP gems
         for (const gem of this.xpGems) {
@@ -897,6 +1185,701 @@ class Game {
         ctx.fillStyle = '#FFF';
         ctx.textAlign = 'center';
         ctx.fillText(this.currentBoss.data.name, this.width / 2, y - 10);
+    }
+    
+    drawThemedBackground(ctx, theme) {
+        const bgColor = theme.bgColor || '#0A0A0A';
+        const gradient = theme.bgGradient;
+        
+        if (gradient && gradient.length >= 2) {
+            const grd = ctx.createRadialGradient(
+                this.width / 2, this.height / 2, 0,
+                this.width / 2, this.height / 2, Math.max(this.width, this.height)
+            );
+            grd.addColorStop(0, gradient[0]);
+            grd.addColorStop(1, gradient[1]);
+            ctx.fillStyle = grd;
+        } else {
+            ctx.fillStyle = bgColor;
+        }
+        ctx.fillRect(0, 0, this.width, this.height);
+        
+        // Ambient glow in center
+        if (theme.ambientGlow) {
+            const glowGrd = ctx.createRadialGradient(
+                this.width / 2, this.height / 2, 0,
+                this.width / 2, this.height / 2, 300
+            );
+            glowGrd.addColorStop(0, theme.ambientGlow);
+            glowGrd.addColorStop(1, 'transparent');
+            ctx.fillStyle = glowGrd;
+            ctx.fillRect(0, 0, this.width, this.height);
+        }
+    }
+    
+    drawThemedParticles(ctx, theme) {
+        const particleType = theme.particleType || 'ash';
+        const particleColor = theme.particleColor || '#333';
+        
+        for (const p of this.bgParticles) {
+            ctx.globalAlpha = p.opacity;
+            
+            switch (particleType) {
+                case 'void':
+                    // Pulsing void particles
+                    const pulse = Math.sin(p.pulse + this.gameTime * 2) * 0.3 + 0.7;
+                    ctx.fillStyle = particleColor;
+                    ctx.globalAlpha = p.opacity * pulse;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    break;
+                    
+                case 'flames':
+                    // Flickering flame particles
+                    const flicker = Math.random() * p.flicker;
+                    ctx.fillStyle = `hsl(${20 + flicker * 20}, 100%, ${50 + flicker * 30}%)`;
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, p.y);
+                    ctx.lineTo(p.x - p.size, p.y + p.size * 2);
+                    ctx.lineTo(p.x + p.size, p.y + p.size * 2);
+                    ctx.closePath();
+                    ctx.fill();
+                    break;
+                    
+                case 'sparkles':
+                    // Gentle, slow-twinkling sparkles (safe for photosensitivity)
+                    const twinkle = Math.sin(p.twinkle + this.gameTime * 0.4) * 0.3 + 0.7; // Much slower, less variation
+                    ctx.fillStyle = `hsl(${p.hue}, 70%, 65%)`; // Less saturated
+                    ctx.globalAlpha = p.opacity * twinkle * 0.7; // Dimmer
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size * (twinkle * 0.5 + 0.5), 0, Math.PI * 2);
+                    ctx.fill();
+                    // Sparkle rays only at peak (rare)
+                    if (twinkle > 0.9) {
+                        ctx.strokeStyle = `hsl(${p.hue}, 60%, 70%)`;
+                        ctx.lineWidth = 1;
+                        ctx.globalAlpha = 0.3;
+                        ctx.beginPath();
+                        ctx.moveTo(p.x - p.size * 1.5, p.y);
+                        ctx.lineTo(p.x + p.size * 1.5, p.y);
+                        ctx.moveTo(p.x, p.y - p.size * 1.5);
+                        ctx.lineTo(p.x, p.y + p.size * 1.5);
+                        ctx.stroke();
+                    }
+                    break;
+                    
+                case 'code':
+                    // Falling matrix-style code
+                    ctx.font = `${p.size}px monospace`;
+                    ctx.fillStyle = particleColor;
+                    ctx.fillText(p.char, p.x, p.y);
+                    break;
+                    
+                case 'dust':
+                    // Gentle floating dust
+                    ctx.fillStyle = particleColor;
+                    ctx.fillRect(p.x, p.y, p.size, p.size);
+                    break;
+                    
+                default: // 'ash'
+                    ctx.fillStyle = particleColor;
+                    ctx.fillRect(p.x, p.y, p.size, p.size);
+            }
+        }
+        ctx.globalAlpha = 1;
+    }
+    
+    drawThemedGrid(ctx, theme) {
+        const gridStyle = theme.gridStyle || 'normal';
+        const gridColor = theme.gridColor || '#1a1a1a';
+        const gridSize = 50;
+        
+        ctx.strokeStyle = gridColor;
+        ctx.lineWidth = 1;
+        
+        switch (gridStyle) {
+            case 'none':
+                // No grid for void theme
+                break;
+                
+            case 'checkered':
+                // Checkered floor pattern (kitchen)
+                ctx.globalAlpha = 0.1;
+                for (let x = 0; x < this.width; x += gridSize) {
+                    for (let y = 0; y < this.height; y += gridSize) {
+                        if ((Math.floor(x / gridSize) + Math.floor(y / gridSize)) % 2 === 0) {
+                            ctx.fillStyle = gridColor;
+                            ctx.fillRect(x, y, gridSize, gridSize);
+                        }
+                    }
+                }
+                ctx.globalAlpha = 1;
+                break;
+                
+            case 'wallpaper':
+                // Victorian wallpaper pattern (mansion)
+                ctx.globalAlpha = 0.15;
+                for (let x = 0; x < this.width; x += gridSize) {
+                    for (let y = 0; y < this.height; y += gridSize) {
+                        ctx.strokeStyle = gridColor;
+                        ctx.beginPath();
+                        ctx.arc(x + gridSize/2, y + gridSize/2, 15, 0, Math.PI * 2);
+                        ctx.stroke();
+                        // Diamond pattern
+                        ctx.beginPath();
+                        ctx.moveTo(x + gridSize/2, y);
+                        ctx.lineTo(x + gridSize, y + gridSize/2);
+                        ctx.lineTo(x + gridSize/2, y + gridSize);
+                        ctx.lineTo(x, y + gridSize/2);
+                        ctx.closePath();
+                        ctx.stroke();
+                    }
+                }
+                ctx.globalAlpha = 1;
+                break;
+                
+            case 'disco':
+                // Disco floor tiles - VERY slow, subtle color shifts (safe for photosensitivity)
+                const time = this.gameTime;
+                for (let x = 0; x < this.width; x += gridSize) {
+                    for (let y = 0; y < this.height; y += gridSize) {
+                        // Very slow hue shift - tiles have fixed base colors that rotate glacially
+                        const tileIndex = Math.floor(x / gridSize) + Math.floor(y / gridSize);
+                        const hue = (tileIndex * 40 + time * 1.5) % 360; // Ultra slow rotation
+                        // Minimal brightness variation - almost static
+                        const brightness = Math.sin(tileIndex * 0.5 + time * 0.08) * 3 + 18;
+                        ctx.fillStyle = `hsl(${hue}, 35%, ${brightness}%)`;
+                        ctx.fillRect(x + 1, y + 1, gridSize - 2, gridSize - 2);
+                    }
+                }
+                break;
+                
+            case 'circuit':
+                // Circuit board pattern (digital)
+                ctx.strokeStyle = gridColor;
+                ctx.lineWidth = 1;
+                // Horizontal lines
+                for (let y = 0; y < this.height; y += gridSize) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    for (let x = 0; x < this.width; x += gridSize/2) {
+                        const yOffset = (Math.floor(x / gridSize) % 2 === 0) ? 0 : (Math.random() > 0.7 ? 10 : 0);
+                        ctx.lineTo(x, y + yOffset);
+                    }
+                    ctx.stroke();
+                }
+                // Connection nodes
+                ctx.fillStyle = theme.accentColor || '#00FF00';
+                ctx.globalAlpha = 0.3;
+                for (let x = gridSize; x < this.width; x += gridSize * 2) {
+                    for (let y = gridSize; y < this.height; y += gridSize * 2) {
+                        ctx.beginPath();
+                        ctx.arc(x, y, 3, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+                ctx.globalAlpha = 1;
+                break;
+                
+            default: // 'normal'
+                for (let x = 0; x < this.width; x += gridSize) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, this.height);
+                    ctx.stroke();
+                }
+                for (let y = 0; y < this.height; y += gridSize) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(this.width, y);
+                    ctx.stroke();
+                }
+        }
+    }
+    
+    drawDecorations(ctx, theme) {
+        if (!this.decorations) return;
+        
+        for (const dec of this.decorations) {
+            switch (dec.type) {
+                // Graveyard decorations
+                case 'gravestone': this.drawGravestone(ctx, dec); break;
+                case 'skull': this.drawSkull(ctx, dec); break;
+                case 'deadtree': this.drawDeadTree(ctx, dec); break;
+                // Mansion decorations
+                case 'cobweb': this.drawCobweb(ctx, dec); break;
+                case 'portrait': this.drawPortrait(ctx, dec); break;
+                case 'candelabra': this.drawCandelabra(ctx, dec); break;
+                case 'rockingchair': this.drawRockingChair(ctx, dec); break;
+                // Void decorations
+                case 'tear': this.drawTear(ctx, dec, theme); break;
+                case 'brokenheart': this.drawBrokenHeart(ctx, dec, theme); break;
+                case 'poem': this.drawPoem(ctx, dec); break;
+                // Kitchen decorations
+                case 'kitchenitem': this.drawKitchenItem(ctx, dec); break;
+                case 'meathook': this.drawMeatHook(ctx, dec); break;
+                case 'cuttingboard': this.drawCuttingBoard(ctx, dec); break;
+                // Disco decorations
+                case 'discoball': this.drawDiscoBall(ctx, dec); break;
+                case 'speaker': this.drawSpeaker(ctx, dec); break;
+                case 'spotlight': this.drawSpotlight(ctx, dec); break;
+                case 'musicnote': this.drawMusicNote(ctx, dec); break;
+                // Digital decorations
+                case 'binarycolumn': this.drawBinaryColumn(ctx, dec, theme); break;
+                case 'terminal': this.drawTerminal(ctx, dec, theme); break;
+                case 'circuitnode': this.drawCircuitNode(ctx, dec, theme); break;
+                case 'errorpopup': this.drawErrorPopup(ctx, dec); break;
+            }
+        }
+    }
+    
+    // === GRAVEYARD DECORATIONS ===
+    drawGravestone(ctx, dec) {
+        ctx.save();
+        ctx.translate(dec.x, dec.y);
+        ctx.scale(dec.size, dec.size);
+        ctx.globalAlpha = 0.25;
+        ctx.fillStyle = '#2a2a2a';
+        
+        switch (dec.variant) {
+            case 0: // Classic rounded
+                ctx.fillRect(-15, -30, 30, 35);
+                ctx.beginPath();
+                ctx.arc(0, -30, 15, Math.PI, 0);
+                ctx.fill();
+                break;
+            case 1: // Cross
+                ctx.fillRect(-5, -40, 10, 45);
+                ctx.fillRect(-15, -30, 30, 8);
+                break;
+            case 2: // Simple
+                ctx.fillRect(-12, -25, 24, 30);
+                break;
+            default: // Tilted broken
+                ctx.rotate(0.15);
+                ctx.fillRect(-15, -25, 25, 30);
+        }
+        ctx.restore();
+    }
+    
+    drawSkull(ctx, dec) {
+        ctx.save();
+        ctx.translate(dec.x, dec.y);
+        ctx.rotate(dec.rotation);
+        ctx.globalAlpha = 0.2;
+        ctx.fillStyle = '#888';
+        // Simple skull shape
+        ctx.beginPath();
+        ctx.arc(0, 0, 8, 0, Math.PI * 2);
+        ctx.fill();
+        // Jaw
+        ctx.fillRect(-6, 5, 12, 5);
+        // Eyes
+        ctx.fillStyle = '#222';
+        ctx.fillRect(-4, -2, 3, 3);
+        ctx.fillRect(1, -2, 3, 3);
+        ctx.restore();
+    }
+    
+    drawDeadTree(ctx, dec) {
+        ctx.save();
+        ctx.translate(dec.x, dec.y);
+        ctx.globalAlpha = 0.2;
+        ctx.strokeStyle = '#333';
+        ctx.lineWidth = 3;
+        // Trunk
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(0, -60);
+        ctx.stroke();
+        // Branches
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, -30);
+        ctx.lineTo(-20, -50);
+        ctx.moveTo(0, -40);
+        ctx.lineTo(15, -55);
+        ctx.moveTo(0, -50);
+        ctx.lineTo(-12, -65);
+        ctx.stroke();
+        ctx.restore();
+    }
+    
+    // === MANSION DECORATIONS ===
+    drawCobweb(ctx, dec) {
+        ctx.save();
+        ctx.globalAlpha = 0.15;
+        ctx.strokeStyle = '#888';
+        ctx.lineWidth = 1;
+        
+        let x, y, xDir, yDir;
+        switch (dec.corner) {
+            case 'tl': x = 0; y = 0; xDir = 1; yDir = 1; break;
+            case 'tr': x = this.width; y = 0; xDir = -1; yDir = 1; break;
+            case 'bl': x = 0; y = this.height; xDir = 1; yDir = -1; break;
+            case 'br': x = this.width; y = this.height; xDir = -1; yDir = -1; break;
+        }
+        
+        for (let i = 0; i < 6; i++) {
+            const angle = (i / 6) * Math.PI / 2;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + Math.cos(angle) * 80 * xDir, y + Math.sin(angle) * 80 * yDir);
+            ctx.stroke();
+        }
+        for (let r = 20; r <= 60; r += 20) {
+            ctx.beginPath();
+            ctx.arc(x, y, r, xDir > 0 ? 0 : Math.PI, yDir > 0 ? Math.PI/2 : -Math.PI/2, xDir * yDir < 0);
+            ctx.stroke();
+        }
+        ctx.restore();
+    }
+    
+    drawPortrait(ctx, dec) {
+        ctx.save();
+        ctx.translate(dec.x, dec.y);
+        ctx.globalAlpha = 0.2;
+        // Frame
+        ctx.fillStyle = '#4a3a2a';
+        ctx.fillRect(-18, -22, 36, 44);
+        // Picture
+        ctx.fillStyle = '#2a2a2a';
+        ctx.fillRect(-14, -18, 28, 36);
+        // Face silhouette
+        ctx.fillStyle = '#3a3a3a';
+        ctx.beginPath();
+        ctx.arc(0, 0, 10, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+    }
+    
+    drawCandelabra(ctx, dec) {
+        ctx.save();
+        ctx.translate(dec.x, dec.y);
+        ctx.globalAlpha = 0.25;
+        // Base
+        ctx.fillStyle = '#5a4a3a';
+        ctx.fillRect(-3, 0, 6, 15);
+        ctx.fillRect(-8, 12, 16, 4);
+        // Candles
+        ctx.fillStyle = '#ddd';
+        ctx.fillRect(-2, -10, 4, 12);
+        // Flame
+        const flicker = Math.sin(dec.flicker + this.gameTime * 5) * 2;
+        ctx.fillStyle = '#FF9900';
+        ctx.globalAlpha = 0.4 + Math.sin(dec.flicker + this.gameTime * 8) * 0.1;
+        ctx.beginPath();
+        ctx.arc(0, -12 + flicker, 4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+    }
+    
+    drawRockingChair(ctx, dec) {
+        ctx.save();
+        ctx.translate(dec.x, dec.y);
+        const rock = Math.sin(dec.phase + this.gameTime * 1.5) * 0.1;
+        ctx.rotate(rock);
+        ctx.globalAlpha = 0.2;
+        ctx.fillStyle = '#3a2a1a';
+        // Seat
+        ctx.fillRect(-12, 0, 24, 5);
+        // Back
+        ctx.fillRect(-10, -20, 3, 20);
+        ctx.fillRect(7, -20, 3, 20);
+        ctx.fillRect(-10, -20, 20, 3);
+        // Rockers
+        ctx.strokeStyle = '#3a2a1a';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(0, 15, 20, 0.3, Math.PI - 0.3);
+        ctx.stroke();
+        ctx.restore();
+    }
+    
+    // === VOID DECORATIONS ===
+    drawTear(ctx, dec, theme) {
+        ctx.save();
+        const float = Math.sin(dec.phase + this.gameTime * 2) * 5;
+        ctx.translate(dec.x, dec.y + float);
+        ctx.globalAlpha = 0.2;
+        ctx.fillStyle = theme.accentColor || '#8B008B';
+        ctx.beginPath();
+        ctx.moveTo(0, -10);
+        ctx.quadraticCurveTo(8, 0, 0, 15);
+        ctx.quadraticCurveTo(-8, 0, 0, -10);
+        ctx.fill();
+        ctx.restore();
+    }
+    
+    drawBrokenHeart(ctx, dec, theme) {
+        ctx.save();
+        const float = Math.sin(dec.phase + this.gameTime * 1.5) * 3;
+        ctx.translate(dec.x, dec.y + float);
+        ctx.globalAlpha = 0.15;
+        ctx.fillStyle = '#8B0000';
+        // Left half
+        ctx.beginPath();
+        ctx.arc(-6, -5, 8, Math.PI, 0);
+        ctx.lineTo(-2, 15);
+        ctx.lineTo(-6, 5);
+        ctx.fill();
+        // Right half (offset)
+        ctx.translate(4, -3);
+        ctx.beginPath();
+        ctx.arc(6, -5, 8, Math.PI, 0);
+        ctx.lineTo(2, 15);
+        ctx.lineTo(6, 5);
+        ctx.fill();
+        ctx.restore();
+    }
+    
+    drawPoem(ctx, dec) {
+        ctx.save();
+        ctx.translate(dec.x, dec.y);
+        ctx.globalAlpha = 0.1;
+        ctx.font = '8px "Press Start 2P"';
+        ctx.fillStyle = '#666';
+        const lines = ['darkness...', 'pain...', 'nobody...', 'understands'];
+        lines.forEach((line, i) => ctx.fillText(line, 0, i * 12));
+        ctx.restore();
+    }
+    
+    // === KITCHEN DECORATIONS ===
+    drawKitchenItem(ctx, dec) {
+        ctx.save();
+        ctx.translate(dec.x, dec.y);
+        ctx.globalAlpha = 0.2;
+        switch (dec.variant) {
+            case 0: // Pot
+                ctx.fillStyle = '#555';
+                ctx.fillRect(-12, -5, 24, 15);
+                ctx.fillRect(-15, -5, 30, 3);
+                break;
+            case 1: // Pan
+                ctx.fillStyle = '#444';
+                ctx.beginPath();
+                ctx.arc(0, 0, 12, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillRect(12, -2, 15, 4);
+                break;
+            case 2: // Cleaver
+                ctx.fillStyle = '#888';
+                ctx.fillRect(-8, -15, 16, 20);
+                ctx.fillStyle = '#5a3a2a';
+                ctx.fillRect(-4, 5, 8, 12);
+                break;
+            default: // Plate
+                ctx.strokeStyle = '#666';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(0, 0, 10, 0, Math.PI * 2);
+                ctx.stroke();
+        }
+        ctx.restore();
+    }
+    
+    drawMeatHook(ctx, dec) {
+        ctx.save();
+        ctx.translate(dec.x, dec.y);
+        ctx.globalAlpha = 0.25;
+        ctx.strokeStyle = '#666';
+        ctx.lineWidth = 3;
+        // Chain
+        ctx.beginPath();
+        ctx.moveTo(0, -30);
+        ctx.lineTo(0, 0);
+        ctx.stroke();
+        // Hook
+        ctx.beginPath();
+        ctx.arc(0, 10, 10, -Math.PI * 0.5, Math.PI * 0.8);
+        ctx.stroke();
+        ctx.restore();
+    }
+    
+    drawCuttingBoard(ctx, dec) {
+        ctx.save();
+        ctx.translate(dec.x, dec.y);
+        ctx.globalAlpha = 0.15;
+        ctx.fillStyle = '#5a4a3a';
+        ctx.fillRect(-20, -12, 40, 24);
+        // Blood stains
+        ctx.fillStyle = '#600';
+        ctx.beginPath();
+        ctx.arc(5, 0, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+    }
+    
+    // === DISCO DECORATIONS ===
+    drawDiscoBall(ctx, dec) {
+        ctx.save();
+        ctx.translate(dec.x, dec.y);
+        dec.rotation += 0.001; // Very slow rotation
+        
+        // String
+        ctx.globalAlpha = 0.4;
+        ctx.strokeStyle = '#444';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, -25);
+        ctx.lineTo(0, -dec.y);
+        ctx.stroke();
+        
+        // Ball
+        ctx.fillStyle = '#555';
+        ctx.beginPath();
+        ctx.arc(0, 0, 25, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Facets (static, no animation)
+        ctx.fillStyle = '#888';
+        for (let i = 0; i < 8; i++) {
+            const angle = dec.rotation + (i / 8) * Math.PI * 2;
+            ctx.fillRect(Math.cos(angle) * 15 - 3, Math.sin(angle) * 15 - 3, 6, 6);
+        }
+        
+        // Very subtle, slow light rays
+        ctx.globalAlpha = 0.04; // Much dimmer
+        for (let i = 0; i < 6; i++) {
+            const angle = dec.rotation * 0.3 + (i / 6) * Math.PI * 2;
+            const hue = (i * 60 + this.gameTime * 2) % 360; // Ultra slow color shift
+            ctx.strokeStyle = `hsl(${hue}, 50%, 55%)`;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(Math.cos(angle) * 400, Math.sin(angle) * 400);
+            ctx.stroke();
+        }
+        ctx.restore();
+    }
+    
+    drawSpeaker(ctx, dec) {
+        ctx.save();
+        ctx.translate(dec.x, dec.y);
+        ctx.globalAlpha = 0.25;
+        ctx.fillStyle = '#222';
+        ctx.fillRect(-15, -20, 30, 40);
+        ctx.fillStyle = '#333';
+        ctx.beginPath();
+        ctx.arc(0, -5, 10, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(0, 12, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+    }
+    
+    drawSpotlight(ctx, dec) {
+        ctx.save();
+        ctx.translate(dec.x, dec.y);
+        const pulse = Math.sin(dec.phase + this.gameTime * 0.12) * 0.3 + 0.7; // Very slow, subtle pulse
+        ctx.globalAlpha = 0.06 * pulse; // Dimmer
+        const grd = ctx.createRadialGradient(0, 0, 0, 0, 0, 60);
+        grd.addColorStop(0, `hsl(${dec.hue}, 50%, 50%)`);
+        grd.addColorStop(1, 'transparent');
+        ctx.fillStyle = grd;
+        ctx.beginPath();
+        ctx.arc(0, 0, 60, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+    }
+    
+    drawMusicNote(ctx, dec) {
+        ctx.save();
+        const float = Math.sin(dec.phase + this.gameTime * 0.5) * 5; // Slower float
+        ctx.translate(dec.x, dec.y + float);
+        ctx.globalAlpha = 0.12;
+        ctx.fillStyle = '#CC9900'; // Slightly dimmer gold
+        // Note head
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 6, 4, -0.3, 0, Math.PI * 2);
+        ctx.fill();
+        // Stem
+        ctx.fillRect(5, -20, 2, 20);
+        // Flag
+        ctx.beginPath();
+        ctx.moveTo(7, -20);
+        ctx.quadraticCurveTo(15, -15, 7, -10);
+        ctx.fill();
+        ctx.restore();
+    }
+    
+    // === DIGITAL DECORATIONS ===
+    drawBinaryColumn(ctx, dec, theme) {
+        ctx.save();
+        ctx.globalAlpha = 0.12;
+        ctx.font = '10px monospace';
+        ctx.fillStyle = theme.accentColor || '#00FF00';
+        const offset = (dec.offset + this.gameTime * 20) % 20;
+        for (let y = -20 + offset; y < this.height; y += 18) {
+            ctx.fillText(Math.random() > 0.5 ? '1' : '0', dec.x, y);
+        }
+        ctx.restore();
+    }
+    
+    drawTerminal(ctx, dec, theme) {
+        ctx.save();
+        ctx.translate(dec.x, dec.y);
+        ctx.globalAlpha = 0.2;
+        // Monitor frame
+        ctx.fillStyle = '#222';
+        ctx.fillRect(-25, -20, 50, 35);
+        // Screen
+        ctx.fillStyle = '#001100';
+        ctx.fillRect(-22, -17, 44, 29);
+        // Text lines
+        ctx.fillStyle = theme.accentColor || '#00FF00';
+        ctx.globalAlpha = 0.3;
+        for (let i = 0; i < 4; i++) {
+            const width = Utils.random(15, 35);
+            ctx.fillRect(-18, -13 + i * 7, width, 4);
+        }
+        ctx.restore();
+    }
+    
+    drawCircuitNode(ctx, dec, theme) {
+        ctx.save();
+        ctx.translate(dec.x, dec.y);
+        const pulse = Math.sin(dec.pulse + this.gameTime * 2) * 0.5 + 0.5;
+        ctx.globalAlpha = 0.15 + pulse * 0.1;
+        ctx.fillStyle = theme.accentColor || '#00FF00';
+        ctx.beginPath();
+        ctx.arc(0, 0, 5, 0, Math.PI * 2);
+        ctx.fill();
+        // Connecting lines
+        ctx.strokeStyle = theme.accentColor || '#00FF00';
+        ctx.globalAlpha = 0.1;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(-30, 0);
+        ctx.lineTo(30, 0);
+        ctx.moveTo(0, -30);
+        ctx.lineTo(0, 30);
+        ctx.stroke();
+        ctx.restore();
+    }
+    
+    drawErrorPopup(ctx, dec) {
+        ctx.save();
+        ctx.translate(dec.x, dec.y);
+        ctx.globalAlpha = 0.15;
+        // Window
+        ctx.fillStyle = '#333';
+        ctx.fillRect(0, 0, 80, 40);
+        // Title bar
+        ctx.fillStyle = '#600';
+        ctx.fillRect(0, 0, 80, 10);
+        // X button
+        ctx.fillStyle = '#a00';
+        ctx.fillRect(70, 2, 8, 6);
+        // Error text
+        ctx.fillStyle = '#f00';
+        ctx.font = '6px monospace';
+        ctx.fillText('ERROR', 5, 22);
+        ctx.fillStyle = '#888';
+        ctx.fillText('404: Soul', 5, 32);
+        ctx.restore();
     }
     
     gameOver() {
