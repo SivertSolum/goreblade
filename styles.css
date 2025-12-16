@@ -358,31 +358,40 @@ body {
     text-align: center;
 }
 
-/* Mute Button */
-.mute-button {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    width: 40px;
-    height: 40px;
+.weapon-icon.empty {
+    background: rgba(10, 10, 10, 0.5);
+    border: 2px dashed var(--text-dim);
+    opacity: 0.4;
+}
+
+/* Mute Button - positioned at bottom right of game screen */
+#mute-btn {
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    top: auto !important;
+    left: auto !important;
+    width: 44px;
+    height: 44px;
     background: var(--void-black);
     border: 2px solid var(--text-dim);
     color: var(--text-primary);
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     cursor: pointer;
     transition: all 0.2s ease;
     pointer-events: auto;
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 9999;
 }
 
-.mute-button:hover {
+#mute-btn:hover {
     border-color: var(--fresh-blood);
     background: var(--dried-blood);
 }
 
-.mute-button.muted {
+#mute-btn.muted {
     border-color: var(--blood-red);
     opacity: 0.7;
 }
@@ -628,6 +637,53 @@ body {
 
 .upgrade-card.new-weapon:hover {
     box-shadow: 0 0 30px var(--xp-color);
+}
+
+/* Pause Screen */
+#pause-screen {
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 500;
+}
+
+.pause-content {
+    text-align: center;
+    z-index: 10;
+}
+
+.pause-title {
+    font-size: 2.5rem;
+    color: var(--bone-white);
+    margin-bottom: 15px;
+    text-shadow: 3px 3px 0 var(--void-black);
+}
+
+.pause-subtitle {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    margin-bottom: 40px;
+}
+
+.pause-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+}
+
+.pause-btn {
+    min-width: 280px;
+    font-size: 0.9rem;
+    padding: 18px 40px;
+}
+
+.pause-btn:hover {
+    transform: scale(1.05);
+}
+
+.pause-btn.selected {
+    border-color: var(--fresh-blood);
+    box-shadow: 0 0 20px var(--blood-red);
+    transform: scale(1.05);
 }
 
 /* Boss Warning */

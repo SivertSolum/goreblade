@@ -19,11 +19,23 @@ class AudioManager {
     }
     
     init() {
+        // Skip if already initialized
+        if (this.audioContext) return;
+        
         try {
             this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
             this.masterGain = this.audioContext.createGain();
             this.masterGain.connect(this.audioContext.destination);
             this.masterGain.gain.value = this.muted ? 0 : this.volume;
+            
+            // Resume on any user interaction (browser autoplay policy)
+            const resumeAudio = () => {
+                this.resume();
+                document.removeEventListener('click', resumeAudio);
+                document.removeEventListener('keydown', resumeAudio);
+            };
+            document.addEventListener('click', resumeAudio, { once: true });
+            document.addEventListener('keydown', resumeAudio, { once: true });
         } catch (e) {
             console.warn('Web Audio not supported');
             this.enabled = false;
@@ -126,6 +138,12 @@ class AudioManager {
     
     toggleMute() {
         this.muted = !this.muted;
+        
+        // Resume audio context on unmute (handles browser autoplay policy)
+        if (!this.muted) {
+            this.resume();
+        }
+        
         if (this.masterGain) {
             this.masterGain.gain.value = this.muted ? 0 : this.volume;
         }
@@ -459,6 +477,110 @@ class AudioManager {
             osc.start(startTime);
             osc.stop(startTime + 0.2);
         });
+    }
+    
+    // Menu hover sound - subtle blip
+    playMenuHover() {
+        if (!this.enabled || !this.audioContext) return;
+        if (this.audioContext.state === 'suspended') return; // Don't play if suspended
+        
+        const osc = this.audioContext.createOscillator();
+        const gain = this.audioContext.createGain();
+        
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+        
+        const now = this.audioContext.currentTime;
+        
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(400, now);
+        osc.frequency.setValueAtTime(450, now + 0.02);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+        
+        osc.start(now);
+        osc.stop(now + 0.05);
+    }
+    
+    // Menu select/click sound - satisfying click
+    playMenuSelect() {
+        if (!this.enabled || !this.audioContext) return;
+        
+        // Resume context if suspended (first click will resume it)
+        if (this.audioContext.state === 'suspended') {
+            this.audioContext.resume();
+        }
+        
+        const osc = this.audioContext.createOscillator();
+        const gain = this.audioContext.createGain();
+        
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+        
+        const now = this.audioContext.currentTime;
+        
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(600, now);
+        osc.frequency.setValueAtTime(800, now + 0.03);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+        
+        osc.start(now);
+        osc.stop(now + 0.08);
+    }
+    
+    // Menu back sound - descending tone
+    playMenuBack() {
+        if (!this.enabled || !this.audioContext) return;
+        
+        // Resume context if suspended
+        if (this.audioContext.state === 'suspended') {
+            this.audioContext.resume();
+        }
+        
+        const osc = this.audioContext.createOscillator();
+        const gain = this.audioContext.createGain();
+        
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+        
+        const now = this.audioContext.currentTime;
+        
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(500, now);
+        osc.frequency.exponentialRampToValueAtTime(300, now + 0.1);
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+        
+        osc.start(now);
+        osc.stop(now + 0.1);
+    }
+    
+    // Menu navigation sound - for changing selection with keyboard/controller
+    playMenuNavigate() {
+        if (!this.enabled || !this.audioContext) return;
+        
+        // Resume context if suspended
+        if (this.audioContext.state === 'suspended') {
+            this.audioContext.resume();
+        }
+        
+        const osc = this.audioContext.createOscillator();
+        const gain = this.audioContext.createGain();
+        
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+        
+        const now = this.audioContext.currentTime;
+        
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(350, now);
+        osc.frequency.setValueAtTime(400, now + 0.02);
+        gain.gain.setValueAtTime(0.06, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.04);
+        
+        osc.start(now);
+        osc.stop(now + 0.04);
     }
 }
 

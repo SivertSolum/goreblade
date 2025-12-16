@@ -754,7 +754,6 @@ class Weapon {
                 const player = this.orbitProjectiles[0].player;
                 this.initOrbitProjectiles(player);
             }
-            
             return true;
         }
         return false;
@@ -871,6 +870,7 @@ class Weapon {
         
         // Update turret count if level changed
         const expectedCount = this.data.turretCount + (this.data.levelBonuses.turretCount || 0) * (this.level - 1);
+        const beforeCount = this.turrets.length;
         while (this.turrets.length < expectedCount) {
             this.turrets.push({
                 angle: (Math.PI * 2 / expectedCount) * this.turrets.length,
@@ -880,7 +880,6 @@ class Weapon {
                 y: 0
             });
         }
-        
         for (const turret of this.turrets) {
             // Rotate around player
             turret.angle += deltaTime * 0.001;

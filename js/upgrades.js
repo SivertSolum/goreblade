@@ -97,15 +97,17 @@ class UpgradeManager {
         const availableUpgrades = [];
         const weaponUpgrades = [];
         
-        // New weapons player doesn't have
+        // New weapons player doesn't have (only if not at max weapons)
+        const canAddNewWeapon = player.weapons.length < player.maxWeapons;
+        
         for (const type of Object.keys(WEAPON_TYPES)) {
-            if (!player.hasWeapon(type)) {
+            if (!player.hasWeapon(type) && canAddNewWeapon) {
                 availableWeapons.push({
                     type: 'new_weapon',
                     weaponType: type,
                     data: WEAPON_TYPES[type]
                 });
-            } else {
+            } else if (player.hasWeapon(type)) {
                 // Can upgrade existing weapon
                 const level = player.getWeaponLevel(type);
                 if (level < WEAPON_TYPES[type].maxLevel) {
@@ -137,10 +139,12 @@ class UpgradeManager {
         // Build choice pool with weighted randomness
         const pool = [];
         
-        // Weight new weapons highly if player has few
-        const weaponWeight = player.weapons.length < 3 ? 3 : 1;
-        for (let i = 0; i < weaponWeight; i++) {
-            pool.push(...availableWeapons);
+        // Weight new weapons highly if player has few (and can still get new weapons)
+        if (canAddNewWeapon && availableWeapons.length > 0) {
+            const weaponWeight = player.weapons.length < 3 ? 3 : 1;
+            for (let i = 0; i < weaponWeight; i++) {
+                pool.push(...availableWeapons);
+            }
         }
         
         // Weapon upgrades are good
@@ -195,6 +199,11 @@ class UpgradeManager {
     applyChoice(player, choice) {
         switch(choice.type) {
             case 'new_weapon':
+                // Double-check we can still add a weapon
+                if (player.weapons.length >= player.maxWeapons) {
+                    console.warn('Cannot add weapon - at max capacity');
+                    return false;
+                }
                 return player.addWeapon(choice.weaponType);
                 
             case 'weapon_upgrade':
@@ -247,7 +256,12 @@ class UpgradeManager {
             <div class="desc">${desc}</div>
         `;
         
-        card.addEventListener('click', () => onClick(choice));
+        // Menu sounds
+        card.addEventListener('mouseenter', () => Audio.playMenuHover());
+        card.addEventListener('click', () => {
+            Audio.playMenuSelect();
+            onClick(choice);
+        });
         
         return card;
     }

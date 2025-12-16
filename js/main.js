@@ -14,6 +14,7 @@ const gameScreen = document.getElementById('game-screen');
 const upgradeScreen = document.getElementById('upgrade-screen');
 const gameOverScreen = document.getElementById('game-over-screen');
 const victoryScreen = document.getElementById('victory-screen');
+const pauseScreen = document.getElementById('pause-screen');
 
 const startBtn = document.getElementById('start-btn');
 const howToBtn = document.getElementById('how-to-btn');
@@ -26,6 +27,9 @@ const menuBtn = document.getElementById('menu-btn');
 const playAgainBtn = document.getElementById('play-again-btn');
 const muteBtn = document.getElementById('mute-btn');
 const muteBtnTitle = document.getElementById('mute-btn-title');
+const resumeBtn = document.getElementById('resume-btn');
+const pauseSettingsBtn = document.getElementById('pause-settings-btn');
+const exitBtn = document.getElementById('exit-btn');
 
 // Controller polling
 let controllerPollInterval = null;
@@ -35,6 +39,7 @@ let currentScreen = 'title';
 let menuIndex = 0;
 let characterIndex = 0;
 let settingIndex = 0;
+let pauseIndex = 0;
 let lastNavTime = 0;
 const NAV_DELAY = 200; // Prevent too fast navigation
 
@@ -191,7 +196,7 @@ function navigateMenu(direction) {
     if (now - lastNavTime < NAV_DELAY) return;
     lastNavTime = now;
     
-    Audio.playPickup(); // Small feedback sound
+    Audio.playMenuNavigate(); // Navigation feedback sound
     
     if (currentScreen === 'title') {
         const buttons = titleScreen.querySelectorAll('.menu-btn');
@@ -337,10 +342,17 @@ function buildCharacterSelect() {
             <div class="character-weapon">Starts with: <span>${weapon.icon} ${weapon.name}</span></div>
         `;
         
+        // Hover sound for this card
+        card.addEventListener('mouseenter', () => {
+            Audio.playMenuHover();
+        });
+        
         // Click handler for this card
         card.onclick = function(e) {
             e.preventDefault();
             e.stopPropagation();
+            
+            Audio.playMenuSelect(); // Play select sound
             
             const clickedKey = this.dataset.characterId;
             console.log('Character card clicked:', clickedKey);
@@ -607,6 +619,28 @@ function handleControllerInput() {
         return;
     }
     
+    // Pause menu navigation
+    if (game && game.state === 'paused') {
+        if (nav === 'up') {
+            navigatePauseMenu(-1);
+        } else if (nav === 'down') {
+            navigatePauseMenu(1);
+        } else if (nav === 'select') {
+            selectPauseMenuItem();
+        } else if (nav === 'back' || nav === 'start') {
+            resumeGame();
+        }
+        return;
+    }
+    
+    // In-game: Start button to pause
+    if (game && game.state === 'playing') {
+        if (nav === 'start') {
+            togglePause();
+            return;
+        }
+    }
+    
     // In-game controller movement
     if (game && game.state === 'playing' && game.player) {
         const movement = Controller.getMovement();
@@ -629,6 +663,81 @@ function handleControllerInput() {
 function returnToTitle() {
     game = null;
     showScreen(titleScreen);
+}
+
+// Pause functions
+function togglePause() {
+    if (!game) return;
+    
+    if (game.state === 'playing') {
+        game.pause();
+        pauseIndex = 0;
+        updatePauseSelection();
+        Audio.playMenuSelect();
+    } else if (game.state === 'paused') {
+        resumeGame();
+    }
+}
+
+function resumeGame() {
+    if (!game || game.state !== 'paused') return;
+    
+    game.resume();
+    Audio.playMenuBack();
+}
+
+function navigatePauseMenu(direction) {
+    const buttons = pauseScreen.querySelectorAll('.pause-btn');
+    pauseIndex = (pauseIndex + direction + buttons.length) % buttons.length;
+    updatePauseSelection();
+    Audio.playMenuNavigate();
+}
+
+function updatePauseSelection() {
+    const buttons = pauseScreen.querySelectorAll('.pause-btn');
+    buttons.forEach((btn, i) => {
+        if (i === pauseIndex) {
+            btn.classList.add('selected');
+        } else {
+            btn.classList.remove('selected');
+        }
+    });
+}
+
+function selectPauseMenuItem() {
+    const buttons = pauseScreen.querySelectorAll('.pause-btn');
+    if (buttons[pauseIndex]) {
+        buttons[pauseIndex].click();
+    }
+}
+
+function openPauseSettings() {
+    // Hide pause screen temporarily
+    pauseScreen.classList.add('hidden');
+    
+    // Store that we came from pause
+    window.pauseSettingsReturn = true;
+    
+    // Show settings
+    GameSettings.updateSettingsUI();
+    settingsScreen.classList.remove('hidden');
+    currentScreen = 'settings';
+    settingIndex = 0;
+    updateMenuSelection();
+}
+
+function exitToMenu() {
+    if (!game) return;
+    
+    // Stop music and clean up
+    Audio.stopMusic();
+    
+    // Hide pause screen
+    pauseScreen.classList.add('hidden');
+    
+    // Return to title
+    returnToTitle();
+    Audio.playMenuBack();
 }
 
 // Button handlers
@@ -656,7 +765,17 @@ backToMenuBtn.addEventListener('click', () => {
 
 settingsBackBtn.addEventListener('click', () => {
     GameSettings.save();
-    showScreen(titleScreen);
+    
+    // Check if we came from pause screen
+    if (window.pauseSettingsReturn && game && game.state === 'paused') {
+        window.pauseSettingsReturn = false;
+        settingsScreen.classList.add('hidden');
+        pauseScreen.classList.remove('hidden');
+        pauseIndex = 0;
+        updatePauseSelection();
+    } else {
+        showScreen(titleScreen);
+    }
 });
 
 // Settings controls
@@ -724,6 +843,19 @@ playAgainBtn.addEventListener('click', () => {
     showScreen(characterScreen);
 });
 
+// Pause menu buttons
+resumeBtn.addEventListener('click', () => {
+    resumeGame();
+});
+
+pauseSettingsBtn.addEventListener('click', () => {
+    openPauseSettings();
+});
+
+exitBtn.addEventListener('click', () => {
+    exitToMenu();
+});
+
 // Mute buttons
 if (muteBtn) {
     muteBtn.addEventListener('click', (e) => {
@@ -748,6 +880,43 @@ document.addEventListener('keydown', (e) => {
     // Mute toggle anywhere
     if (e.key.toLowerCase() === 'm') {
         toggleMute();
+        return;
+    }
+    
+    // Pause toggle with Escape or P during gameplay
+    if ((e.key === 'Escape' || e.key.toLowerCase() === 'p') && game && currentScreen === 'game') {
+        if (game.state === 'playing') {
+            togglePause();
+            return;
+        } else if (game.state === 'paused') {
+            // If in pause menu, Escape resumes
+            if (e.key === 'Escape') {
+                resumeGame();
+                return;
+            }
+        }
+    }
+    
+    // Pause menu navigation
+    if (game && game.state === 'paused') {
+        switch(e.key.toLowerCase()) {
+            case 'w':
+            case 'arrowup':
+                e.preventDefault();
+                navigatePauseMenu(-1);
+                break;
+            case 's':
+            case 'arrowdown':
+                e.preventDefault();
+                navigatePauseMenu(1);
+                break;
+        }
+        
+        // Enter/Space to select pause menu item
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            selectPauseMenuItem();
+        }
         return;
     }
     
@@ -801,8 +970,8 @@ document.addEventListener('keydown', (e) => {
         }
     }
     
-    // Escape to go back
-    if (e.key === 'Escape') {
+    // Escape to go back in menus
+    if (e.key === 'Escape' && currentScreen !== 'game') {
         menuBack();
     }
 });
@@ -814,9 +983,36 @@ document.addEventListener('contextmenu', (e) => {
     }
 });
 
+// Initialize menu sounds for all buttons
+function initMenuSounds() {
+    // Get all retro buttons
+    const allButtons = document.querySelectorAll('.retro-btn, .character-card, .setting-toggle, .mute-button');
+    
+    allButtons.forEach(btn => {
+        // Hover sound
+        btn.addEventListener('mouseenter', () => {
+            Audio.playMenuHover();
+        });
+        
+        // Click sound (use capture to play before other handlers)
+        btn.addEventListener('click', () => {
+            // Check if it's a back button
+            if (btn.textContent.includes('◄') || btn.textContent.includes('BACK')) {
+                Audio.playMenuBack();
+            } else {
+                Audio.playMenuSelect();
+            }
+        }, true);
+    });
+}
+
+// Initialize audio immediately (context starts suspended, resumes on interaction)
+Audio.init();
+
 // Initial setup
 GameSettings.load();
 GameSettings.apply();
+initMenuSounds(); // Add sounds to all buttons
 showScreen(titleScreen);
 updateMenuSelection(); // Show initial selection
 

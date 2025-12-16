@@ -113,6 +113,21 @@ class Game {
         this.bossWarningShown = false;
         this.pendingNextWave = 0;
         
+        // Initialize weapon display with 4 fixed slots
+        const weaponDisplay = document.getElementById('weapon-display');
+        if (weaponDisplay) {
+            weaponDisplay.innerHTML = '';
+            for (let i = 0; i < this.player.maxWeapons; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'weapon-icon empty';
+                slot.dataset.slot = String(i);
+                weaponDisplay.appendChild(slot);
+            }
+        }
+        
+        // Update HUD immediately to show starting weapon
+        this.updateHUD();
+        
         // Start first wave
         this.startWave(1);
     }
@@ -127,6 +142,22 @@ class Game {
         this.showingWaveAnnouncement = true;
         this.waveAnnouncement = Utils.randomFrom(WAVE_ANNOUNCEMENTS);
         this.waveStartTimer = 2000;
+        
+        // Spawn boss at start of boss waves (5, 10, 15, 20)
+        // Wait for wave announcement to finish (2000ms) before showing boss warning
+        if (this.waveManager.bossWave) {
+            setTimeout(() => {
+                if (this.state === 'playing' && !this.bossWarningShown) {
+                    this.showBossWarning();
+                    // Spawn boss after warning displays
+                    setTimeout(() => {
+                        if (this.state === 'playing' && !this.bossSpawned) {
+                            this.spawnBoss();
+                        }
+                    }, 1500);
+                }
+            }, 2200); // Wait for wave text to disappear (2000ms) + small buffer
+        }
         
         // Update HUD
         this.updateHUD();
@@ -179,6 +210,9 @@ class Game {
     selectUpgrade(choice) {
         // Apply the upgrade
         this.upgradeManager.applyChoice(this.player, choice);
+        
+        // Immediately update HUD to show new weapon/upgrade
+        this.updateHUD();
         
         // Hide upgrade screen
         document.getElementById('upgrade-screen').classList.add('hidden');
@@ -272,18 +306,21 @@ class Game {
             }
         }
         
-        // Show boss warning
-        if (this.waveManager.bossWave && !this.bossWarningShown && 
-            this.waveManager.enemiesToSpawn <= 0 && this.enemies.length <= 3) {
-            this.showBossWarning();
-        }
+        // Boss warning is now shown at wave start for boss waves
+        // (Old code: waited until enemies cleared)
         
         // Update enemies
         let totalPullX = 0, totalPullY = 0;
         const clonesToSpawn = [];
+        const poisonKills = [];
         
         for (const enemy of this.enemies) {
-            enemy.update(deltaTime, this.player.x, this.player.y, this.width, this.height);
+            const updateResult = enemy.update(deltaTime, this.player.x, this.player.y, this.width, this.height);
+            
+            // Check if enemy was killed by poison
+            if (updateResult && updateResult.killedByPoison) {
+                poisonKills.push(enemy);
+            }
             
             // Void walker pull effect
             if (enemy.pullsPlayer && !enemy.isDying) {
@@ -325,6 +362,11 @@ class Game {
             // Keep player in bounds
             this.player.x = Utils.clamp(this.player.x, this.player.size, this.width - this.player.size);
             this.player.y = Utils.clamp(this.player.y, this.player.size, this.height - this.player.size);
+        }
+        
+        // Handle poison kills
+        for (const enemy of poisonKills) {
+            this.handleEnemyDeath(enemy);
         }
         
         // Spawn doppelganger clones
@@ -406,6 +448,11 @@ class Game {
                 if (dist < proj.size + enemy.size / 2) {
                     const killed = enemy.takeDamage(proj.damage);
                     this.particles.bloodSplatter(enemy.x, enemy.y, 5);
+                    
+                    // Apply poison effect if this is a poison projectile
+                    if (proj.pattern === 'poison' && proj.poisonDamage > 0 && proj.poisonDuration > 0) {
+                        enemy.applyPoison(proj.poisonDamage, proj.poisonDuration);
+                    }
                     
                     // Handle enemy death FIRST before processing projectile behavior
                     if (killed) {
@@ -500,7 +547,6 @@ class Game {
         // Check wave completion (only if wave is still in progress)
         if (this.waveManager.waveInProgress && this.waveManager.isWaveComplete()) {
             this.waveManager.endWave();
-            
             // Check for victory
             if (this.waveManager.isGameWon()) {
                 this.victory();
@@ -672,47 +718,42 @@ class Game {
         document.getElementById('kill-count').textContent = 
             `KILLS: ${this.waveManager.totalKills}`;
         
-        // Weapon display - always update to ensure all weapons shown
+        // Weapon display - always show 4 fixed slots
         const weaponDisplay = document.getElementById('weapon-display');
         const tooltip = document.getElementById('weapon-tooltip');
+        const maxSlots = this.player.maxWeapons; // 4 slots
         
         // Get valid weapons only
         const validWeapons = this.player.weapons.filter(w => w && w.data);
-        const displayCount = weaponDisplay.children.length;
         
-        // Check if we need to rebuild the display
-        let needsRebuild = validWeapons.length !== displayCount;
-        
-        // Also check if weapon types changed
-        if (!needsRebuild) {
-            for (let i = 0; i < validWeapons.length; i++) {
-                const icon = weaponDisplay.children[i];
-                if (!icon || icon.dataset.weaponType !== validWeapons[i].type) {
-                    needsRebuild = true;
-                    break;
-                }
+        // Create 4 fixed slots if not already present
+        if (weaponDisplay.children.length !== maxSlots) {
+            weaponDisplay.innerHTML = '';
+            for (let i = 0; i < maxSlots; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'weapon-icon empty';
+                slot.dataset.slot = String(i);
+                weaponDisplay.appendChild(slot);
             }
         }
         
-        if (needsRebuild) {
-            weaponDisplay.innerHTML = '';
+        // Update each slot
+        for (let i = 0; i < maxSlots; i++) {
+            const slot = weaponDisplay.children[i];
+            const weapon = validWeapons[i];
             
-            for (let i = 0; i < validWeapons.length; i++) {
-                const weapon = validWeapons[i];
+            if (weapon) {
+                // Slot has a weapon
+                slot.className = 'weapon-icon';
+                slot.textContent = weapon.data.icon || '?';
+                slot.dataset.level = String(weapon.level);
+                slot.dataset.weaponType = weapon.type;
                 
-                const icon = document.createElement('div');
-                icon.className = 'weapon-icon';
-                icon.textContent = weapon.data.icon || '?';
-                icon.dataset.level = String(weapon.level);
-                icon.dataset.weaponType = weapon.type;
-                icon.dataset.index = String(i);
-                
-                // Add tooltip handlers immediately
+                // Add tooltip handlers
                 const weaponData = weapon.data;
-                icon.onmouseenter = () => {
+                slot.onmouseenter = () => {
                     if (tooltip && weaponData) {
-                        const idx = parseInt(icon.dataset.index);
-                        const currentWeapon = validWeapons[idx] || this.player.weapons.find(w => w && w.type === icon.dataset.weaponType);
+                        const currentWeapon = this.player.weapons.find(w => w && w.type === slot.dataset.weaponType);
                         const level = currentWeapon ? currentWeapon.level : 1;
                         tooltip.querySelector('.tooltip-name').textContent = 
                             `${weaponData.icon || ''} ${weaponData.name || 'Unknown'}`;
@@ -723,23 +764,17 @@ class Game {
                         tooltip.classList.remove('hidden');
                     }
                 };
-                
-                icon.onmouseleave = () => {
-                    if (tooltip) {
-                        tooltip.classList.add('hidden');
-                    }
+                slot.onmouseleave = () => {
+                    if (tooltip) tooltip.classList.add('hidden');
                 };
-                
-                weaponDisplay.appendChild(icon);
-            }
-        } else {
-            // Just update levels if they changed
-            for (let i = 0; i < weaponDisplay.children.length; i++) {
-                const icon = weaponDisplay.children[i];
-                const weapon = validWeapons[i];
-                if (weapon && icon.dataset.level !== String(weapon.level)) {
-                    icon.dataset.level = String(weapon.level);
-                }
+            } else {
+                // Empty slot
+                slot.className = 'weapon-icon empty';
+                slot.textContent = '';
+                slot.dataset.level = '';
+                slot.dataset.weaponType = '';
+                slot.onmouseenter = null;
+                slot.onmouseleave = null;
             }
         }
     }
@@ -900,6 +935,35 @@ class Game {
         // Show victory screen
         document.getElementById('game-screen').classList.add('hidden');
         document.getElementById('victory-screen').classList.remove('hidden');
+    }
+    
+    pause() {
+        if (this.state !== 'playing') return;
+        
+        this.state = 'paused';
+        Audio.pauseMusic();
+        
+        // Show pause screen
+        document.getElementById('pause-screen').classList.remove('hidden');
+    }
+    
+    resume() {
+        if (this.state !== 'paused') return;
+        
+        this.state = 'playing';
+        this.lastTime = performance.now(); // Reset time to avoid jump
+        Audio.resumeMusic();
+        
+        // Hide pause screen
+        document.getElementById('pause-screen').classList.add('hidden');
+    }
+    
+    togglePause() {
+        if (this.state === 'playing') {
+            this.pause();
+        } else if (this.state === 'paused') {
+            this.resume();
+        }
     }
     
     start() {

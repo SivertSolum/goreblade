@@ -364,6 +364,12 @@ class Enemy {
         this.deathTimer = 0;
         this.isDying = false;
         this.isDead = false;
+        
+        // Poison effect
+        this.poisonDamage = 0;
+        this.poisonTimer = 0;
+        this.poisonTickTimer = 0;
+        this.isPoisoned = false;
     }
     
     update(deltaTime, playerX, playerY, canvasWidth, canvasHeight) {
@@ -373,6 +379,29 @@ class Enemy {
                 this.isDead = true;
             }
             return;
+        }
+        
+        // Update poison effect
+        if (this.isPoisoned) {
+            this.poisonTimer -= deltaTime;
+            this.poisonTickTimer -= deltaTime;
+            
+            // Apply poison tick damage every 500ms
+            if (this.poisonTickTimer <= 0) {
+                this.poisonTickTimer = 500;
+                this.health -= this.poisonDamage;
+                this.hitFlash = 50;
+                if (this.health <= 0) {
+                    this.die();
+                    return { killedByPoison: true };
+                }
+            }
+            
+            // Clear poison when duration ends
+            if (this.poisonTimer <= 0) {
+                this.isPoisoned = false;
+                this.poisonDamage = 0;
+            }
         }
         
         // Update animation
@@ -457,6 +486,17 @@ class Enemy {
         };
     }
     
+    // Apply poison effect to this enemy
+    applyPoison(damage, duration) {
+        this.isPoisoned = true;
+        this.poisonDamage = damage;
+        this.poisonTimer = duration;
+        // Don't reset tick timer if already poisoned (refresh duration only)
+        if (this.poisonTickTimer <= 0) {
+            this.poisonTickTimer = 500;
+        }
+    }
+    
     takeDamage(amount) {
         if (this.isDying || this.isPhased) return false;
         
@@ -528,6 +568,9 @@ class Enemy {
         } else if (this.isPhased) {
             ctx.globalAlpha = 0.4;
             ctx.fillStyle = this.color;
+        } else if (this.isPoisoned) {
+            // Green tint for poisoned enemies
+            ctx.fillStyle = '#32CD32';
         } else {
             ctx.fillStyle = this.color;
         }
@@ -1267,7 +1310,7 @@ class WaveManager {
         this.enemiesToSpawn = 0;
         
         this.bossInterval = 5; // Boss every 5 waves
-        this.maxWaves = 15; // Win condition
+        this.maxWaves = 20; // Win condition - survive 20 waves
         
         // Character-specific bosses
         this.characterBosses = characterBosses || ['MEGA_ZOMBIE', 'DEMON_LORD', 'GHOST_KING', 'NIGHTMARE'];
@@ -1349,15 +1392,16 @@ class WaveManager {
     
     getBossType() {
         // Use character-specific bosses
+        // Wave 5 = boss 0, Wave 10 = boss 1, Wave 15 = boss 2, Wave 20 = boss 3 (final)
         const bossIndex = Math.floor((this.currentWave / this.bossInterval) - 1);
         
-        // Final boss on last wave (last boss in character's list)
+        // Final boss on wave 20
         if (this.currentWave >= this.maxWaves) {
             return this.characterBosses[this.characterBosses.length - 1];
         }
         
-        // Cycle through character's bosses
-        return this.characterBosses[bossIndex % (this.characterBosses.length - 1)];
+        // Get boss for this wave (0-3 for waves 5, 10, 15, 20)
+        return this.characterBosses[Math.min(bossIndex, this.characterBosses.length - 2)];
     }
     
     spawnEnemy(playerX, playerY) {

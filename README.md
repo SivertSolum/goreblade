@@ -1,4 +1,4 @@
-# GOREBLADE: Unholy Survivors (yet another Vampire Survivors ripoff)
+# GOREBLADE (yet another Vampire Survivors ripoff)
 
 > *"They came for your soul... but you came for their butts."*
 
@@ -12,7 +12,6 @@ A retro-styled horror auto-shooter roguelite game inspired by Vampire Survivors,
 ---
 
 ## [🎮 Click Here To Play Now 🎮](https://sivertsolum.github.io/goreblade/)
-
 
 ---
 
@@ -147,8 +146,8 @@ You can hold up to **4 weapons** simultaneously. Choose wisely!
 1. **Kill enemies** → Collect purple soul gems
 2. **Fill the XP bar** → **LEVEL UP!** → Choose an upgrade
 3. **Waves continue** → Next wave auto-starts
-4. **Every 5 waves** → Boss fight!
-5. **Survive 15 waves** → Victory!
+4. **Every 5 waves** → Boss fight! (Waves 5, 10, 15, 20)
+5. **Survive 20 waves** → Victory!
 
 ### Upgrades Include:
 - **New Weapons** - Add to your arsenal (max 4)
@@ -201,4 +200,4 @@ Inspired by:
 
 ---
 
-*© 2025 HELL INDUSTRIES - "We Put The Fun In Funeral"*
+*© 2025 Kis Entertainment*

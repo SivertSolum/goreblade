@@ -191,10 +191,12 @@ class ControllerManager {
     
     selectNextUpgrade() {
         this.selectedUpgrade = (this.selectedUpgrade + 1) % this.upgradeCount;
+        Audio.playMenuNavigate();
     }
     
     selectPrevUpgrade() {
         this.selectedUpgrade = (this.selectedUpgrade - 1 + this.upgradeCount) % this.upgradeCount;
+        Audio.playMenuNavigate();
     }
     
     resetUpgradeSelection() {

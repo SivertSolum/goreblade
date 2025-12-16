@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GOREBLADE: Unholy Survivors</title>
-    <link rel="stylesheet" href="styles.css?v=2">
+    <title>GOREBLADE</title>
+    <link rel="stylesheet" href="styles.css?v=4">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -16,7 +16,6 @@
             <div class="scanlines"></div>
             <div class="title-content">
                 <h1 class="game-title">GOREBLADE</h1>
-                <h2 class="subtitle">UNHOLY SURVIVORS</h2>
                 <div class="skull-art">
     ▄████▄
    ██░░░░██
@@ -31,7 +30,7 @@
                 <button id="how-to-btn" class="retro-btn menu-btn" data-menu-index="1">? HOW TO SLAY</button>
                 <button id="settings-btn" class="retro-btn menu-btn" data-menu-index="2">⚙ SETTINGS</button>
                 <p class="controller-hint">🎮 Xbox Controller Supported!</p>
-                <p class="copyright">© 2024 HELL INDUSTRIES - "We Put The Fun In Funeral"</p>
+                <p class="copyright">© 2025 Kis Entertainment"</p>
             </div>
         </div>
 
@@ -117,13 +116,14 @@
                     <h3 class="control-header">⌨️ KEYBOARD</h3>
                     <p>► WASD or ARROW KEYS to move your sorry carcass</p>
                     <p>► Weapons fire AUTOMATICALLY (because you're lazy)</p>
+                    <p>► ESC or P to pause the game</p>
                     <p>► M to mute/unmute sounds</p>
                     
                     <h3 class="control-header">🎮 XBOX CONTROLLER</h3>
                     <p>► LEFT STICK to move around</p>
                     <p>► A BUTTON to select upgrades</p>
                     <p>► D-PAD to navigate upgrade choices</p>
-                    <p>► START to pause (just kidding, no pausing in hell)</p>
+                    <p>► START to pause the game</p>
                     
                     <h3 class="control-header">📋 OBJECTIVES</h3>
                     <p>► Collect XP gems from dead nerds</p>
@@ -158,13 +158,13 @@
                     <span id="kill-count">KILLS: 0</span>
                 </div>
                 <div id="weapon-display"></div>
-                <button id="mute-btn" class="mute-button" title="Toggle Sound">🔊</button>
                 <div id="weapon-tooltip" class="weapon-tooltip hidden">
                     <div class="tooltip-name"></div>
                     <div class="tooltip-level"></div>
                     <div class="tooltip-desc"></div>
                 </div>
             </div>
+            <button id="mute-btn" class="mute-button" title="Toggle Sound (M)">🔊</button>
         </div>
 
         <!-- Upgrade Screen -->
@@ -175,6 +175,20 @@
                 <p class="upgrade-subtitle">Your soul collection pleases the dark gods</p>
                 <p id="player-level" class="level-display">LEVEL 2</p>
                 <div id="upgrade-choices"></div>
+            </div>
+        </div>
+
+        <!-- Pause Screen -->
+        <div id="pause-screen" class="screen hidden">
+            <div class="scanlines"></div>
+            <div class="pause-content">
+                <h2 class="pause-title">⏸ PAUSED</h2>
+                <p class="pause-subtitle">Taking a breather from the carnage?</p>
+                <div class="pause-menu">
+                    <button id="resume-btn" class="retro-btn pause-btn" data-pause-index="0">► RESUME</button>
+                    <button id="pause-settings-btn" class="retro-btn pause-btn" data-pause-index="1">⚙ SETTINGS</button>
+                    <button id="exit-btn" class="retro-btn pause-btn" data-pause-index="2">✖ EXIT TO MENU</button>
+                </div>
             </div>
         </div>
 
@@ -217,16 +231,16 @@
     </div>
 
     <script src="js/utils.js?v=2"></script>
-    <script src="js/audio.js?v=3"></script>
-    <script src="js/controller.js?v=2"></script>
+    <script src="js/audio.js?v=5"></script>
+    <script src="js/controller.js?v=3"></script>
     <script src="js/weapons.js?v=4"></script>
     <script src="js/enemies.js?v=2"></script>
     <script src="js/characters.js?v=2"></script>
     <script src="js/player.js?v=4"></script>
     <script src="js/particles.js?v=2"></script>
-    <script src="js/upgrades.js?v=2"></script>
-    <script src="js/game.js?v=4"></script>
-    <script src="js/main.js?v=4"></script>
+    <script src="js/upgrades.js?v=3"></script>
+    <script src="js/game.js?v=5"></script>
+    <script src="js/main.js?v=7"></script>
 </body>
 </html>
 
